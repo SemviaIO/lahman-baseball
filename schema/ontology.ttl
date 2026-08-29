@@ -155,9 +155,23 @@ bball:standingsRank a rdf:Property ;
 ################################################################
 #
 # One vocabulary, not three. `bball:wins` is a manager's wins and a pitcher's
-# wins; `bball:games` is games played whichever table counted them. The classes
-# differ, the predicates do not, because a reader asking "how many did they win"
-# should not have to know which relation the answer came from.
+# wins; `bball:losses` is losses charged whichever relation charged them. The
+# classes differ, the predicates do not, because a reader asking "how many did
+# they win" should not have to know which relation the answer came from.
+#
+# The carve-out, and why it exists. Sharing a predicate is sound only where two
+# sources mean the same thing about the same resource. Batting and pitching mint
+# the SAME stint subject, and four of their columns collide with opposite senses:
+# home runs, walks, strikeouts and games are hit, drawn, suffered and played on
+# the batting side, and allowed, issued, recorded and pitched on the pitching
+# side. Emitting both would seat two contradictory values on one node, and a
+# career total summed over a two-way player's stints would quietly add home runs
+# allowed to home runs hit. So the pitching map emits only the four predicates no
+# batting line can carry — bball:wins, bball:losses, bball:saves and
+# bball:earnedRunAverage — and the batting map is the sole source of the four
+# ambiguous ones. Pitching counts that need their own sense, such as hits allowed
+# or innings pitched, are simply not mapped; an absent predicate is better than
+# one that lies.
 
 bball:player a rdf:Property ;
   rdfs:label "player"@en ;
@@ -173,7 +187,7 @@ bball:stintOrdinal a rdf:Property ;
 
 bball:games a rdf:Property ;
   rdfs:label "games"@en ;
-  rdfs:comment "Games the person appeared in during this stint, as an integer."@en .
+  rdfs:comment "Games the person appeared in during this stint, as an integer. Sourced from the batting relation alone — games pitched is the other sense of the same word, and the carve-out above says why it does not share this predicate."@en .
 
 bball:atBats a rdf:Property ;
   rdfs:label "at bats"@en ;
@@ -193,7 +207,7 @@ bball:triples a rdf:Property ;
 
 bball:homeRuns a rdf:Property ;
   rdfs:label "home runs"@en ;
-  rdfs:comment "Home runs, as an integer."@en .
+  rdfs:comment "Home runs hit, as an integer. Batting only. Home runs allowed by a pitcher are the opposite fact about the same stint and are deliberately not mapped here."@en .
 
 bball:runsBattedIn a rdf:Property ;
   rdfs:label "runs batted in"@en ;
@@ -205,11 +219,11 @@ bball:stolenBases a rdf:Property ;
 
 bball:walks a rdf:Property ;
   rdfs:label "walks"@en ;
-  rdfs:comment "Bases on balls, as an integer. Read as a batter's walks drawn on a batting stint and as a pitcher's walks allowed on a pitching stint — the same word the game uses for both."@en .
+  rdfs:comment "Bases on balls drawn by the batter, as an integer. Batting only. Walks issued by a pitcher read the other way, and a sum that mixed the two would be meaningless."@en .
 
 bball:strikeouts a rdf:Property ;
   rdfs:label "strikeouts"@en ;
-  rdfs:comment "Strikeouts, as an integer. A batter's on a batting stint, a pitcher's on a pitching stint."@en .
+  rdfs:comment "Strikeouts suffered by the batter, as an integer. Batting only, for the reason given under bball:walks."@en .
 
 bball:wins a rdf:Property ;
   rdfs:label "wins"@en ;
@@ -455,7 +469,7 @@ bball:TeamSeason a svs:ClassShape ;
 
 bball:Stint a svs:ClassShape ;
   rdfs:label "Stint"@en ;
-  rdfs:comment "A player's stretch with one team in one season — the entity the batting, pitching and fielding relations already share a key on, named. Three TriplesMaps mint this same subject from three tables, so a two-way player's batting line and fielding line land as predicates on one resource rather than on two resources a query would have to rejoin."@en ;
+  rdfs:comment "A player's stretch with one team in one season — the entity the batting, pitching, fielding and appearances relations already share a key on, named. Four TriplesMaps mint this same subject from four tables, so a two-way player's batting line and fielding line land as predicates on one resource rather than on two resources a query would have to rejoin."@en ;
 
   sh:property [
     sh:path bball:player ;
@@ -478,16 +492,18 @@ bball:Stint a svs:ClassShape ;
     sh:description "1 for the first stretch with a team that season, 2 for the next."@en
   ] ;
 
-  # No sh:maxCount on the stat paths below. The fielding relation records one row
-  # per position played, so a stint that spans two positions carries two putout
-  # counts on one resource — correct RDF over a source whose grain is finer than
-  # the entity's, and a shape that capped it at 1 would report the source as
-  # invalid rather than reporting the model as coarse. bball:position and
-  # bball:gamesAtPosition are multi-valued by design for the same reason.
+  # Cardinality below tracks the grain of the relation that sources each path,
+  # not a house preference. Batting and pitching are one row per stint, so their
+  # paths cap at 1. Fielding records one row per position played, so a stint that
+  # spans two positions carries two putout counts on one resource — correct RDF
+  # over a source whose grain is finer than the entity's, and a cap of 1 there
+  # would report the source as invalid rather than reporting the model as coarse.
+  # bball:position and bball:gamesAtPosition are multi-valued for the same reason.
   sh:property [
     sh:path bball:games ;
     sh:datatype xsd:integer ;
-    sh:description "Games appeared in."@en
+    sh:maxCount 1 ;
+    sh:description "Games appeared in, from the batting relation."@en
   ] ;
 
   sh:property [
@@ -521,7 +537,8 @@ bball:Stint a svs:ClassShape ;
   sh:property [
     sh:path bball:homeRuns ;
     sh:datatype xsd:integer ;
-    sh:description "Home runs — hit on a batting stint, allowed on a pitching stint."@en
+    sh:maxCount 1 ;
+    sh:description "Home runs hit."@en
   ] ;
 
   sh:property [
@@ -534,19 +551,22 @@ bball:Stint a svs:ClassShape ;
   sh:property [
     sh:path bball:stolenBases ;
     sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
     sh:description "Stolen bases."@en
   ] ;
 
   sh:property [
     sh:path bball:walks ;
     sh:datatype xsd:integer ;
-    sh:description "Walks drawn, or allowed."@en
+    sh:maxCount 1 ;
+    sh:description "Walks drawn by the batter."@en
   ] ;
 
   sh:property [
     sh:path bball:strikeouts ;
     sh:datatype xsd:integer ;
-    sh:description "Strikeouts."@en
+    sh:maxCount 1 ;
+    sh:description "Strikeouts suffered by the batter."@en
   ] ;
 
   sh:property [
@@ -664,7 +684,7 @@ bball:ManagerStint a svs:ClassShape ;
 
 bball:AwardHonor a svs:ClassShape ;
   rdfs:label "Award Honor"@en ;
-  rdfs:comment "One award conferred on one person. Not keyed on person, award, year and league alone: 492 groups of the register's award rows share exactly that tuple, distinguished only by the free-text citation — a weekly honor won twice in one summer. The citation is part of this resource's identity, not a decoration on it."@en ;
+  rdfs:comment "One award conferred on one person. Not keyed on person, award, year and league alone: 492 groups of the register's award rows share exactly that tuple, distinguished only by the free-text citation — a weekly honor won twice in one summer. The citation is part of this resource's identity, not a decoration on it. Both the award name and the citation are free text with spaces, so the subject IRI splices slugged forms and bball:award and bball:citation deliver the raw values."@en ;
 
   sh:property [
     sh:path bball:player ;
@@ -711,7 +731,7 @@ bball:AwardHonor a svs:ClassShape ;
 
 bball:HallOfFameBallot a svs:ClassShape ;
   rdfs:label "Hall of Fame Ballot"@en ;
-  rdfs:comment "One appearance on one Hall of Fame ballot. A candidate appears on many across their eligibility, and in a single year can appear on more than one electorate's ballot — 146 rows of the register do — so the voting body is part of this resource's identity alongside the candidate and the year."@en ;
+  rdfs:comment "One appearance on one Hall of Fame ballot. A candidate appears on many across their eligibility, and in a single year can appear on more than one electorate's ballot — 146 rows of the register do — so the voting body is part of this resource's identity alongside the candidate and the year. The voting body's name has spaces in it on 1,205 rows, so the subject IRI splices a slugged form of it and bball:votingBody delivers the raw label; the mapping document carries the argument for slugging rather than encoding."@en ;
 
   sh:property [
     sh:path bball:player ;

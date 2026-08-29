@@ -76,7 +76,7 @@ bball:stintOrdinal a rdf:Property ;
 	rdfs:comment "1 for a player's first stretch with a team in a season, 2 for the next, and so on. The register's counter for a mid-season trade."@en .
 bball:games a rdf:Property ;
 	rdfs:label "games"@en ;
-	rdfs:comment "Games the person appeared in during this stint, as an integer."@en .
+	rdfs:comment "Games the person appeared in during this stint, as an integer. Sourced from the batting relation alone — games pitched is the other sense of the same word, and the carve-out above says why it does not share this predicate."@en .
 bball:atBats a rdf:Property ;
 	rdfs:label "at bats"@en ;
 	rdfs:comment "Official at-bats, as an integer. Excludes walks, sacrifices and hit-by-pitches, which is why a batting average divides hits by this rather than by plate appearances."@en .
@@ -91,7 +91,7 @@ bball:triples a rdf:Property ;
 	rdfs:comment "Three-base hits, as an integer."@en .
 bball:homeRuns a rdf:Property ;
 	rdfs:label "home runs"@en ;
-	rdfs:comment "Home runs, as an integer."@en .
+	rdfs:comment "Home runs hit, as an integer. Batting only. Home runs allowed by a pitcher are the opposite fact about the same stint and are deliberately not mapped here."@en .
 bball:runsBattedIn a rdf:Property ;
 	rdfs:label "runs batted in"@en ;
 	rdfs:comment "Runs batted in, as an integer."@en .
@@ -100,10 +100,10 @@ bball:stolenBases a rdf:Property ;
 	rdfs:comment "Stolen bases, as an integer."@en .
 bball:walks a rdf:Property ;
 	rdfs:label "walks"@en ;
-	rdfs:comment "Bases on balls, as an integer. Read as a batter's walks drawn on a batting stint and as a pitcher's walks allowed on a pitching stint — the same word the game uses for both."@en .
+	rdfs:comment "Bases on balls drawn by the batter, as an integer. Batting only. Walks issued by a pitcher read the other way, and a sum that mixed the two would be meaningless."@en .
 bball:strikeouts a rdf:Property ;
 	rdfs:label "strikeouts"@en ;
-	rdfs:comment "Strikeouts, as an integer. A batter's on a batting stint, a pitcher's on a pitching stint."@en .
+	rdfs:comment "Strikeouts suffered by the batter, as an integer. Batting only, for the reason given under bball:walks."@en .
 bball:wins a rdf:Property ;
 	rdfs:label "wins"@en ;
 	rdfs:comment "Wins credited, as an integer — to a pitcher on a pitching stint, to a manager on a managerial stint, to a club on a team-season."@en .
@@ -275,7 +275,7 @@ bball:TeamSeason sh:property <ontology/.well-known/genid/turtle/8535509cc9f028e7
 bball:TeamSeason sh:property <ontology/.well-known/genid/turtle/f7ea4b09224a6376c7f4f70943f9b270f0dcd7dc> .
 bball:Stint a svs:ClassShape ;
 	rdfs:label "Stint"@en ;
-	rdfs:comment "A player's stretch with one team in one season — the entity the batting, pitching and fielding relations already share a key on, named. Three TriplesMaps mint this same subject from three tables, so a two-way player's batting line and fielding line land as predicates on one resource rather than on two resources a query would have to rejoin."@en .
+	rdfs:comment "A player's stretch with one team in one season — the entity the batting, pitching, fielding and appearances relations already share a key on, named. Four TriplesMaps mint this same subject from four tables, so a two-way player's batting line and fielding line land as predicates on one resource rather than on two resources a query would have to rejoin."@en .
 <ontology/.well-known/genid/turtle/2fa9975199153e146b0a3e2e98b93bf328218ec1> sh:path bball:player ;
 	sh:class bball:Person ;
 	sh:maxCount 1 ;
@@ -291,10 +291,11 @@ bball:Stint sh:property <ontology/.well-known/genid/turtle/7208088aac7a4e40bb51e
 	sh:maxCount 1 ;
 	sh:description "1 for the first stretch with a team that season, 2 for the next."@en .
 bball:Stint sh:property <ontology/.well-known/genid/turtle/09cfbef68499b1923006fb05cd473f4d49f7bd43> .
-<ontology/.well-known/genid/turtle/c15fc76a662f09c05e788a934176fbed2e3f5d8c> sh:path bball:games ;
+<ontology/.well-known/genid/turtle/272fb2a4bb45886761974758728c245c82613b7d> sh:path bball:games ;
 	sh:datatype xsd:integer ;
-	sh:description "Games appeared in."@en .
-bball:Stint sh:property <ontology/.well-known/genid/turtle/c15fc76a662f09c05e788a934176fbed2e3f5d8c> .
+	sh:maxCount 1 ;
+	sh:description "Games appeared in, from the batting relation."@en .
+bball:Stint sh:property <ontology/.well-known/genid/turtle/272fb2a4bb45886761974758728c245c82613b7d> .
 <ontology/.well-known/genid/turtle/1a1e6c970ab18d4fcca34c384223337c926978a8> sh:path bball:atBats ;
 	sh:datatype xsd:integer ;
 	sh:maxCount 1 ;
@@ -315,27 +316,31 @@ bball:Stint sh:property <ontology/.well-known/genid/turtle/8df5980d69b20f642d350
 	sh:maxCount 1 ;
 	sh:description "Three-base hits."@en .
 bball:Stint sh:property <ontology/.well-known/genid/turtle/1ca5a1e761ada9f230d7b7905736ecbb61629603> .
-<ontology/.well-known/genid/turtle/989e7e529e4235335b4430f7226227b9cf54e86f> sh:path bball:homeRuns ;
+<ontology/.well-known/genid/turtle/20967e17b4a1d1ecab964fb944b276416fcae6c0> sh:path bball:homeRuns ;
 	sh:datatype xsd:integer ;
-	sh:description "Home runs — hit on a batting stint, allowed on a pitching stint."@en .
-bball:Stint sh:property <ontology/.well-known/genid/turtle/989e7e529e4235335b4430f7226227b9cf54e86f> .
+	sh:maxCount 1 ;
+	sh:description "Home runs hit."@en .
+bball:Stint sh:property <ontology/.well-known/genid/turtle/20967e17b4a1d1ecab964fb944b276416fcae6c0> .
 <ontology/.well-known/genid/turtle/77b79ac73dc56dae1cca7071301d88f0a61090f8> sh:path bball:runsBattedIn ;
 	sh:datatype xsd:integer ;
 	sh:maxCount 1 ;
 	sh:description "Runs batted in."@en .
 bball:Stint sh:property <ontology/.well-known/genid/turtle/77b79ac73dc56dae1cca7071301d88f0a61090f8> .
-<ontology/.well-known/genid/turtle/531756ad132f521fba3974e27c89c8d19638ba25> sh:path bball:stolenBases ;
+<ontology/.well-known/genid/turtle/45e3e4250b15f49a466b7aeabe496db08fdb7cf0> sh:path bball:stolenBases ;
 	sh:datatype xsd:integer ;
+	sh:maxCount 1 ;
 	sh:description "Stolen bases."@en .
-bball:Stint sh:property <ontology/.well-known/genid/turtle/531756ad132f521fba3974e27c89c8d19638ba25> .
-<ontology/.well-known/genid/turtle/d55bc6e616e74783ab62b1435fa22f85d2b43ae5> sh:path bball:walks ;
+bball:Stint sh:property <ontology/.well-known/genid/turtle/45e3e4250b15f49a466b7aeabe496db08fdb7cf0> .
+<ontology/.well-known/genid/turtle/05cfc50da0600fa3532cf82781ff0508b633e7d8> sh:path bball:walks ;
 	sh:datatype xsd:integer ;
-	sh:description "Walks drawn, or allowed."@en .
-bball:Stint sh:property <ontology/.well-known/genid/turtle/d55bc6e616e74783ab62b1435fa22f85d2b43ae5> .
-<ontology/.well-known/genid/turtle/5df30b01842597081859a891bfbc1ce3371d6c94> sh:path bball:strikeouts ;
+	sh:maxCount 1 ;
+	sh:description "Walks drawn by the batter."@en .
+bball:Stint sh:property <ontology/.well-known/genid/turtle/05cfc50da0600fa3532cf82781ff0508b633e7d8> .
+<ontology/.well-known/genid/turtle/da82bf00cc60c91af71c727af2de306d9c128a9a> sh:path bball:strikeouts ;
 	sh:datatype xsd:integer ;
-	sh:description "Strikeouts."@en .
-bball:Stint sh:property <ontology/.well-known/genid/turtle/5df30b01842597081859a891bfbc1ce3371d6c94> .
+	sh:maxCount 1 ;
+	sh:description "Strikeouts suffered by the batter."@en .
+bball:Stint sh:property <ontology/.well-known/genid/turtle/da82bf00cc60c91af71c727af2de306d9c128a9a> .
 <ontology/.well-known/genid/turtle/627e5f784d5217eed8f420e3314bce18c442c7a2> sh:path bball:wins ;
 	sh:datatype xsd:integer ;
 	sh:maxCount 1 ;
@@ -416,7 +421,7 @@ bball:ManagerStint sh:property <ontology/.well-known/genid/turtle/5c29f1a34a1991
 bball:ManagerStint sh:property <ontology/.well-known/genid/turtle/1ea025d84068ef6bc6cd89df89d2a3c2b17258ab> .
 bball:AwardHonor a svs:ClassShape ;
 	rdfs:label "Award Honor"@en ;
-	rdfs:comment "One award conferred on one person. Not keyed on person, award, year and league alone: 492 groups of the register's award rows share exactly that tuple, distinguished only by the free-text citation — a weekly honor won twice in one summer. The citation is part of this resource's identity, not a decoration on it."@en .
+	rdfs:comment "One award conferred on one person. Not keyed on person, award, year and league alone: 492 groups of the register's award rows share exactly that tuple, distinguished only by the free-text citation — a weekly honor won twice in one summer. The citation is part of this resource's identity, not a decoration on it. Both the award name and the citation are free text with spaces, so the subject IRI splices slugged forms and bball:award and bball:citation deliver the raw values."@en .
 <ontology/.well-known/genid/turtle/9437e3a09a5401baf0cb207329893bc790e5a096> sh:path bball:player ;
 	sh:class bball:Person ;
 	sh:maxCount 1 ;
@@ -449,7 +454,7 @@ bball:AwardHonor sh:property <ontology/.well-known/genid/turtle/ad1f43a47c3943f1
 bball:AwardHonor sh:property <ontology/.well-known/genid/turtle/160142ffd6ad63d34c3a5edb4480421e3c97a2cd> .
 bball:HallOfFameBallot a svs:ClassShape ;
 	rdfs:label "Hall of Fame Ballot"@en ;
-	rdfs:comment "One appearance on one Hall of Fame ballot. A candidate appears on many across their eligibility, and in a single year can appear on more than one electorate's ballot — 146 rows of the register do — so the voting body is part of this resource's identity alongside the candidate and the year."@en .
+	rdfs:comment "One appearance on one Hall of Fame ballot. A candidate appears on many across their eligibility, and in a single year can appear on more than one electorate's ballot — 146 rows of the register do — so the voting body is part of this resource's identity alongside the candidate and the year. The voting body's name has spaces in it on 1,205 rows, so the subject IRI splices a slugged form of it and bball:votingBody delivers the raw label; the mapping document carries the argument for slugging rather than encoding."@en .
 <ontology/.well-known/genid/turtle/2b42c94c55fe76417d7b54ade90adf46c8ab5103> sh:path bball:player ;
 	sh:class bball:Person ;
 	sh:maxCount 1 ;

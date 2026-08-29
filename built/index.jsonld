@@ -41,6 +41,22 @@
   "baseIRI": "https://github.com/SemviaIO/lahman-baseball/",
   "tool": "urn:sem:build:0.1.0",
   "datasets": {
+    "https://github.com/SemviaIO/lahman-baseball/ballparks": {
+      "files": [
+        "./ballparks.ttl"
+      ],
+      "title": "Ballparks",
+      "source": "../schema/ballparks.md",
+      "hash": "sha256-fcec4be1d5bc00d97179d87adff80fdb1e5e52125c473a05b0792d184a7a478b"
+    },
+    "https://github.com/SemviaIO/lahman-baseball/colleges": {
+      "files": [
+        "./colleges.ttl"
+      ],
+      "title": "Colleges",
+      "source": "../schema/colleges.md",
+      "hash": "sha256-1b43dd92cdcc82e53c7a36373201398bcab5296fcbd3738d7bd67496b32a4e8f"
+    },
     "https://github.com/SemviaIO/lahman-baseball/connection": {
       "files": [
         "./connection.ttl"
@@ -51,6 +67,22 @@
       "source": "../schema/connection.ttl",
       "hash": "sha256-768e81d31e1c2a32ea9bd620517ecd5cf65391e250fa7e9bd00361c841b1c998"
     },
+    "https://github.com/SemviaIO/lahman-baseball/franchises-and-seasons": {
+      "files": [
+        "./franchises-and-seasons.ttl"
+      ],
+      "title": "Franchises and Seasons",
+      "source": "../schema/franchises-and-seasons.md",
+      "hash": "sha256-df13ba843791d750e19c6af04ca88dab45a73cbadd4afd64f05c9d25f9ba3587"
+    },
+    "https://github.com/SemviaIO/lahman-baseball/honors": {
+      "files": [
+        "./honors.ttl"
+      ],
+      "title": "Honors",
+      "source": "../schema/honors.md",
+      "hash": "sha256-ac36e26b7c20d5759607d367d552697e81198ad97780ce383a2c13310cc9ca55"
+    },
     "https://github.com/SemviaIO/lahman-baseball/ontology": {
       "files": [
         "./ontology.ttl"
@@ -59,8 +91,24 @@
       "description": "The classes and predicates this package's RML mappings project the Lahman database's relations onto. Eleven classes — the register of people, the franchise and the team-season it splits into, the stint that batting/pitching/fielding share, and the association entities for awards, ballots, college attendance and ballpark residency.",
       "type": "https://pkg.semvia.io/semvia/core/meta-schema#Schema",
       "source": "../schema/ontology.ttl",
-      "hash": "sha256-9c4f9f82ec0db7f4b8ebdccad2346357c70f2de9a8e0337b23c6767d152f355a"
+      "hash": "sha256-c18c714687330dc1f2cedbdad1a4222f01e7b680c9ff9cadf720541f16052f82"
+    },
+    "https://github.com/SemviaIO/lahman-baseball/people": {
+      "files": [
+        "./people.ttl"
+      ],
+      "title": "People",
+      "source": "../schema/people.md",
+      "hash": "sha256-149bedb8e0d29f68b18f42971d8089244e22787237871e52785fda4e4a60ccd1"
+    },
+    "https://github.com/SemviaIO/lahman-baseball/stints": {
+      "files": [
+        "./stints.ttl"
+      ],
+      "title": "Stints",
+      "source": "../schema/stints.md",
+      "hash": "sha256-d0573c41462dc8c9ecce14463dfcce9b9d1388f2d77086913e2e63a244247757"
     }
   },
-  "builtAt": "2026-08-29T18:45:18.305Z"
+  "builtAt": "2026-08-29T19:02:29.704Z"
 }
