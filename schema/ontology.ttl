@@ -1,0 +1,917 @@
+# The baseball ontology — the knowledge model the RML mappings in this package
+# project the Lahman database's relations onto.
+#
+# Baseball has classes lahman's schema does not. `teams` conflates a franchise's
+# continuing identity with one season's roster; a player's batting, pitching and
+# fielding lines are three rows in three tables about one real event. This file
+# names those entities explicitly and the mapping documents lift the tables onto
+# them, so a query is written in the language of the game rather than in the
+# language of the CSV dump the schema descends from.
+#
+# No third-party vocabulary survived contact with the domain. `schema:Person` and
+# `schema:SportsTeam` were considered and dropped: `schema:Person.birthDate`
+# wants one ISO literal where lahman gives three separate text columns, and
+# `schema:SportsTeam` has no room for the TeamSeason-vs-Franchise split the
+# domain actually needs. Following the GLEIF package's precedent, this package
+# stays local `bball:` throughout.
+#
+# House modelling rules this file follows (monorepo AGENTS.md, "Inference Layer"):
+#   - predicates are bare `rdf:Property` with label + comment, and carry no
+#     `rdfs:domain` / `rdfs:range`. Those are live typing declarations under
+#     rdfs2/rdfs3, and a range paired with an `sh:class` on the same path makes
+#     that constraint unfailable.
+#   - instance constraints live in `sh:property` blocks on the `svs:ClassShape`.
+#   - no `sh:minCount` on a mapped property. These shapes document a virtual
+#     graph over a source we do not control, and that source has nulls — 978
+#     people carry no birth year, 3,030 no debut date, 1,983 ballot rows no vote
+#     count, 855 team-seasons no World Series outcome. A shape is documentation
+#     here, not a gate the source could satisfy.
+#
+# On predicate naming. No predicate is named after a lahman-specific column:
+# there is no `bball:g_1b`, no `bball:c_2b`, no `bball:ipouts`, no
+# `bball:namefirst`, no `bball:franchname`. A query answered through a predicate
+# spelled like its column proves only that we can spell SQL in SPARQL. Four
+# predicates do coincide with a source column name — `bball:name`, `bball:city`,
+# `bball:state`, `bball:country` — and each is a generic English word serving
+# four classes whose source columns are spelled four different ways
+# (`franchname`, `name`, `name_full`, `parkname`). `bball:inducted` and
+# `bball:active` coincide with the columns they read because the source happened
+# to pick the conceptual word first.
+
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix svs:  <https://pkg.semvia.io/semvia/core/meta-schema#> .
+@prefix svds: <https://pkg.semvia.io/semvia/core/dataset#> .
+@prefix bball: <#> .
+
+################################################################
+# Schema metadata
+################################################################
+
+<> a svs:Schema ;
+  dct:title "Lahman Baseball Ontology"@en ;
+  dct:description "The classes and predicates this package's RML mappings project the Lahman database's relations onto. Eleven classes — the register of people, the franchise and the team-season it splits into, the stint that batting/pitching/fielding share, and the association entities for awards, ballots, college attendance and ballpark residency."@en ;
+  # Absolute, not the `<../core/meta-schema>` spelling the in-monorepo schemas
+  # use: that one resolves against the monorepo layout, and from this package's
+  # baseIRI it would land on an IRI nothing publishes.
+  svds:imports <https://pkg.semvia.io/semvia/core/meta-schema> ;
+  sh:declare [
+    a sh:PrefixDeclaration ;
+    sh:prefix "bball" ;
+    sh:namespace bball:
+  ] ;
+.
+
+################################################################
+# Naming
+################################################################
+#
+# `bball:name` is deliberately one predicate across Franchise, TeamSeason, School
+# and Ballpark rather than four. Each reads a differently-spelled column, and a
+# consumer asking "what is this thing called" should not have to know which class
+# it landed on to ask.
+
+bball:name a rdf:Property ;
+  rdfs:label "name"@en ;
+  rdfs:comment "The thing's name as the source records it: a franchise's continuing name, a team's name for one season, a school's full name, a ballpark's name."@en .
+
+bball:givenName a rdf:Property ;
+  rdfs:label "given name"@en ;
+  rdfs:comment "A person's given name as the register spells it — 'Babe' rather than 'George'. The register also carries a birth-certificate given name, which this predicate is not."@en .
+
+bball:familyName a rdf:Property ;
+  rdfs:label "family name"@en ;
+  rdfs:comment "A person's family name."@en .
+
+bball:city a rdf:Property ;
+  rdfs:label "city"@en ;
+  rdfs:comment "The city a school or a ballpark is in."@en .
+
+bball:state a rdf:Property ;
+  rdfs:label "state"@en ;
+  rdfs:comment "The state or province a school or a ballpark is in. Empty for locations outside the US and Canada."@en .
+
+bball:country a rdf:Property ;
+  rdfs:label "country"@en ;
+  rdfs:comment "The country a school or a ballpark is in."@en .
+
+################################################################
+# Person predicates
+################################################################
+
+bball:birthYear a rdf:Property ;
+  rdfs:label "birth year"@en ;
+  rdfs:comment "The year of birth, as an integer. The register stores year, month and day in three separate text columns; only the year is lifted, because a composed birth date would have to invent a value for the 978 rows missing one of the three."@en .
+
+bball:battingHand a rdf:Property ;
+  rdfs:label "batting hand"@en ;
+  rdfs:comment "L, R, or B for a switch-hitter."@en .
+
+bball:throwingHand a rdf:Property ;
+  rdfs:label "throwing hand"@en ;
+  rdfs:comment "L or R."@en .
+
+bball:debutDate a rdf:Property ;
+  rdfs:label "debut date"@en ;
+  rdfs:comment "The date of the person's first major-league game. The source column is already ISO-8601 text, which is why this one can be declared xsd:date where the numeric columns cannot be declared xsd:integer without a cast."@en .
+
+bball:finalGameDate a rdf:Property ;
+  rdfs:label "final game date"@en ;
+  rdfs:comment "The date of the person's last major-league game."@en .
+
+################################################################
+# Franchise and team-season predicates
+################################################################
+
+bball:active a rdf:Property ;
+  rdfs:label "active"@en ;
+  rdfs:comment "Y or N — whether the franchise still operates."@en .
+
+bball:seasonYear a rdf:Property ;
+  rdfs:label "season year"@en ;
+  rdfs:comment "The year a season-scoped resource belongs to, as an integer. Carried by TeamSeason, AwardHonor, CollegeAttendance and BallparkTenure alike, so 'what happened in 1998' is one predicate rather than four."@en .
+
+bball:league a rdf:Property ;
+  rdfs:label "league"@en ;
+  rdfs:comment "The league token — AL, NL, and the historical leagues the register also covers (AA, FL, NL, PL, UA, and the Negro leagues)."@en .
+
+bball:franchise a rdf:Property ;
+  rdfs:label "franchise"@en ;
+  rdfs:comment "The continuing organizational identity a team-season belongs to. This edge is what makes 'how many World Series has the Braves franchise won' answerable across Boston, Milwaukee and Atlanta."@en .
+
+bball:wonWorldSeries a rdf:Property ;
+  rdfs:label "won World Series"@en ;
+  rdfs:comment "Y or N. Absent for the 855 team-seasons predating the modern World Series or belonging to leagues that did not contest one — which is why no shape requires it."@en .
+
+bball:standingsRank a rdf:Property ;
+  rdfs:label "standings rank"@en ;
+  rdfs:comment "Where the team finished in its division or league, as an integer."@en .
+
+################################################################
+# Stint predicates
+################################################################
+#
+# One vocabulary, not three. `bball:wins` is a manager's wins and a pitcher's
+# wins; `bball:games` is games played whichever table counted them. The classes
+# differ, the predicates do not, because a reader asking "how many did they win"
+# should not have to know which relation the answer came from.
+
+bball:player a rdf:Property ;
+  rdfs:label "player"@en ;
+  rdfs:comment "The person a stint, ballot, award or college attendance is about. Named for the commonest case; the register covers managers, umpires and executives on the same edge, because they share one identifier space."@en .
+
+bball:teamSeason a rdf:Property ;
+  rdfs:label "team season"@en ;
+  rdfs:comment "The team-season a stint or a ballpark tenure belongs to."@en .
+
+bball:stintOrdinal a rdf:Property ;
+  rdfs:label "stint ordinal"@en ;
+  rdfs:comment "1 for a player's first stretch with a team in a season, 2 for the next, and so on. The register's counter for a mid-season trade."@en .
+
+bball:games a rdf:Property ;
+  rdfs:label "games"@en ;
+  rdfs:comment "Games the person appeared in during this stint, as an integer."@en .
+
+bball:atBats a rdf:Property ;
+  rdfs:label "at bats"@en ;
+  rdfs:comment "Official at-bats, as an integer. Excludes walks, sacrifices and hit-by-pitches, which is why a batting average divides hits by this rather than by plate appearances."@en .
+
+bball:hits a rdf:Property ;
+  rdfs:label "hits"@en ;
+  rdfs:comment "Base hits, as an integer."@en .
+
+bball:doubles a rdf:Property ;
+  rdfs:label "doubles"@en ;
+  rdfs:comment "Two-base hits, as an integer. The source column is spelled `c_2b`, a survivor of a CSV header that could not start an identifier with a digit."@en .
+
+bball:triples a rdf:Property ;
+  rdfs:label "triples"@en ;
+  rdfs:comment "Three-base hits, as an integer."@en .
+
+bball:homeRuns a rdf:Property ;
+  rdfs:label "home runs"@en ;
+  rdfs:comment "Home runs, as an integer."@en .
+
+bball:runsBattedIn a rdf:Property ;
+  rdfs:label "runs batted in"@en ;
+  rdfs:comment "Runs batted in, as an integer."@en .
+
+bball:stolenBases a rdf:Property ;
+  rdfs:label "stolen bases"@en ;
+  rdfs:comment "Stolen bases, as an integer."@en .
+
+bball:walks a rdf:Property ;
+  rdfs:label "walks"@en ;
+  rdfs:comment "Bases on balls, as an integer. Read as a batter's walks drawn on a batting stint and as a pitcher's walks allowed on a pitching stint — the same word the game uses for both."@en .
+
+bball:strikeouts a rdf:Property ;
+  rdfs:label "strikeouts"@en ;
+  rdfs:comment "Strikeouts, as an integer. A batter's on a batting stint, a pitcher's on a pitching stint."@en .
+
+bball:wins a rdf:Property ;
+  rdfs:label "wins"@en ;
+  rdfs:comment "Wins credited, as an integer — to a pitcher on a pitching stint, to a manager on a managerial stint, to a club on a team-season."@en .
+
+bball:losses a rdf:Property ;
+  rdfs:label "losses"@en ;
+  rdfs:comment "Losses charged, as an integer."@en .
+
+bball:saves a rdf:Property ;
+  rdfs:label "saves"@en ;
+  rdfs:comment "Saves, as an integer."@en .
+
+bball:earnedRunAverage a rdf:Property ;
+  rdfs:label "earned run average"@en ;
+  rdfs:comment "Earned runs allowed per nine innings, as a decimal. Not spelled `bball:era`: that would mirror the source column, and this package's claim is that the vocabulary is the game's rather than the dump's."@en .
+
+bball:putouts a rdf:Property ;
+  rdfs:label "putouts"@en ;
+  rdfs:comment "Putouts recorded, as an integer."@en .
+
+bball:assists a rdf:Property ;
+  rdfs:label "assists"@en ;
+  rdfs:comment "Assists recorded, as an integer."@en .
+
+bball:errors a rdf:Property ;
+  rdfs:label "errors"@en ;
+  rdfs:comment "Fielding errors charged, as an integer."@en .
+
+bball:position a rdf:Property ;
+  rdfs:label "position"@en ;
+  rdfs:comment "A fielding position the player appeared at during this stint: P, C, 1B, 2B, 3B, SS, LF, CF, RF, OF, DH, PH, PR. Multi-valued — a stint carries one value per position played. Emitted only by the appearances pivot, paired one-to-one with bball:gamesAtPosition; the fielding relation carries the same fact at a different grain and is deliberately not a second source for this predicate."@en .
+
+bball:gamesAtPosition a rdf:Property ;
+  rdfs:label "games at position"@en ;
+  rdfs:comment "Games appeared at the paired bball:position, as an integer. Always emitted together with bball:position by the same pivot row."@en .
+
+################################################################
+# Award, ballot, college and ballpark predicates
+################################################################
+
+bball:award a rdf:Property ;
+  rdfs:label "award"@en ;
+  rdfs:comment "The award's name as the register spells it — 'Most Valuable Player', 'NLCS MVP', 'Player of the Week'. A literal token rather than an IRI: the register has no award registry to mint one from."@en .
+
+bball:sharedHonor a rdf:Property ;
+  rdfs:label "shared honor"@en ;
+  rdfs:comment "Y when the award was tied and shared with another recipient. Absent otherwise, on all but 659 of the register's award rows."@en .
+
+bball:citation a rdf:Property ;
+  rdfs:label "citation"@en ;
+  rdfs:comment "The register's free-text qualifier on an award — 'Week of 1973-09-07' for a weekly honor, a position for an all-star selection. It is not decoration: it is what distinguishes one Player of the Week from the next in the same league and year, and the award subject IRI splices it for exactly that reason."@en .
+
+bball:ballotYear a rdf:Property ;
+  rdfs:label "ballot year"@en ;
+  rdfs:comment "The year of a Hall of Fame ballot, as an integer. Distinct from bball:seasonYear, which is about a season played rather than a vote held."@en .
+
+bball:votingBody a rdf:Property ;
+  rdfs:label "voting body"@en ;
+  rdfs:comment "Which electorate cast the ballot — BBWAA, Veterans, Old Timers, and the era committees the Hall has run since. A player can appear in the same year on more than one body's ballot, which is why the ballot subject IRI splices this."@en .
+
+bball:ballotsCast a rdf:Property ;
+  rdfs:label "ballots cast"@en ;
+  rdfs:comment "How many ballots the electorate returned, as an integer."@en .
+
+bball:votesReceived a rdf:Property ;
+  rdfs:label "votes received"@en ;
+  rdfs:comment "Votes the candidate received, as an integer."@en .
+
+bball:votesNeeded a rdf:Property ;
+  rdfs:label "votes needed"@en ;
+  rdfs:comment "Votes required for induction on that ballot, as an integer."@en .
+
+bball:inducted a rdf:Property ;
+  rdfs:label "inducted"@en ;
+  rdfs:comment "Y or N — whether this ballot elected the candidate."@en .
+
+bball:inducteeCategory a rdf:Property ;
+  rdfs:label "inductee category"@en ;
+  rdfs:comment "The category the candidate stood in: Player, Manager, Umpire, Executive, Pioneer, or Pioneer/Executive. The reason the person class is bball:Person and not bball:Player."@en .
+
+bball:school a rdf:Property ;
+  rdfs:label "school"@en ;
+  rdfs:comment "The school a college attendance is at."@en .
+
+bball:ballpark a rdf:Property ;
+  rdfs:label "ballpark"@en ;
+  rdfs:comment "The ballpark a tenure is at."@en .
+
+bball:gamesHosted a rdf:Property ;
+  rdfs:label "games hosted"@en ;
+  rdfs:comment "Home games played at the ballpark under this tenure, as an integer."@en .
+
+bball:seasonAttendance a rdf:Property ;
+  rdfs:label "season attendance"@en ;
+  rdfs:comment "Total attendance across the tenure's home games, as an integer."@en .
+
+bball:firstHomeGameDate a rdf:Property ;
+  rdfs:label "first home game date"@en ;
+  rdfs:comment "The date of the first home game of the tenure. ISO-8601 in the source, as bball:debutDate is."@en .
+
+bball:lastHomeGameDate a rdf:Property ;
+  rdfs:label "last home game date"@en ;
+  rdfs:comment "The date of the last home game of the tenure."@en .
+
+################################################################
+# Classes
+################################################################
+
+bball:Person a svs:ClassShape ;
+  rdfs:label "Person"@en ;
+  rdfs:comment "Every human the register carries — player, manager, umpire, executive, pioneer. Not bball:Player: the Hall of Fame relation inducts non-players, the same identifier space covers player-managers, and a class named for one role would be wrong for the rest of its own extent."@en ;
+
+  sh:property [
+    sh:path bball:givenName ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The given name as the register spells it."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:familyName ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The family name."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:birthYear ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "The year of birth."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:battingHand ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "L, R or B."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:throwingHand ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "L or R."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:debutDate ;
+    sh:datatype xsd:date ;
+    sh:maxCount 1 ;
+    sh:description "The first major-league game."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:finalGameDate ;
+    sh:datatype xsd:date ;
+    sh:maxCount 1 ;
+    sh:description "The last major-league game."@en
+  ] ;
+.
+
+bball:Franchise a svs:ClassShape ;
+  rdfs:label "Franchise"@en ;
+  rdfs:comment "The continuing organizational identity across relocations and renames — the one thing that has been the Braves in Boston, in Milwaukee and in Atlanta. Kept separate from TeamSeason because a question about a franchise's history has no resource to attach itself to otherwise."@en ;
+
+  sh:property [
+    sh:path bball:name ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The franchise's continuing name."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:active ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "Y or N."@en
+  ] ;
+.
+
+bball:TeamSeason a svs:ClassShape ;
+  rdfs:label "Team Season"@en ;
+  rdfs:comment "One franchise's club for one season — the season-scoped facts, keyed on year, team and league. The register's `teams` relation conflates this with the franchise; this class carries the half that changes every year and bball:franchise points at the half that does not."@en ;
+
+  sh:property [
+    sh:path bball:seasonYear ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "The season."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:league ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The league the club played in that season."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:name ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The club's name that season."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:wins ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Games won."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:losses ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Games lost."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:standingsRank ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Finishing position."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:wonWorldSeries ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "Y or N; absent where no World Series was contested."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:franchise ;
+    sh:class bball:Franchise ;
+    sh:maxCount 1 ;
+    sh:description "The continuing franchise this season belongs to."@en
+  ] ;
+.
+
+bball:Stint a svs:ClassShape ;
+  rdfs:label "Stint"@en ;
+  rdfs:comment "A player's stretch with one team in one season — the entity the batting, pitching and fielding relations already share a key on, named. Three TriplesMaps mint this same subject from three tables, so a two-way player's batting line and fielding line land as predicates on one resource rather than on two resources a query would have to rejoin."@en ;
+
+  sh:property [
+    sh:path bball:player ;
+    sh:class bball:Person ;
+    sh:maxCount 1 ;
+    sh:description "Whose stint this is."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:teamSeason ;
+    sh:class bball:TeamSeason ;
+    sh:maxCount 1 ;
+    sh:description "The club and season this stint was with."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:stintOrdinal ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "1 for the first stretch with a team that season, 2 for the next."@en
+  ] ;
+
+  # No sh:maxCount on the stat paths below. The fielding relation records one row
+  # per position played, so a stint that spans two positions carries two putout
+  # counts on one resource — correct RDF over a source whose grain is finer than
+  # the entity's, and a shape that capped it at 1 would report the source as
+  # invalid rather than reporting the model as coarse. bball:position and
+  # bball:gamesAtPosition are multi-valued by design for the same reason.
+  sh:property [
+    sh:path bball:games ;
+    sh:datatype xsd:integer ;
+    sh:description "Games appeared in."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:atBats ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Official at-bats."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:hits ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Base hits."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:doubles ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Two-base hits."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:triples ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Three-base hits."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:homeRuns ;
+    sh:datatype xsd:integer ;
+    sh:description "Home runs — hit on a batting stint, allowed on a pitching stint."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:runsBattedIn ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Runs batted in."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:stolenBases ;
+    sh:datatype xsd:integer ;
+    sh:description "Stolen bases."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:walks ;
+    sh:datatype xsd:integer ;
+    sh:description "Walks drawn, or allowed."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:strikeouts ;
+    sh:datatype xsd:integer ;
+    sh:description "Strikeouts."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:wins ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Pitching wins."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:losses ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Pitching losses."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:saves ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Saves."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:earnedRunAverage ;
+    sh:datatype xsd:decimal ;
+    sh:maxCount 1 ;
+    sh:description "Earned runs allowed per nine innings."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:putouts ;
+    sh:datatype xsd:integer ;
+    sh:description "Putouts, one value per position played."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:assists ;
+    sh:datatype xsd:integer ;
+    sh:description "Assists, one value per position played."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:errors ;
+    sh:datatype xsd:integer ;
+    sh:description "Errors, one value per position played."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:position ;
+    sh:datatype xsd:string ;
+    sh:description "A position appeared at, one value per position."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:gamesAtPosition ;
+    sh:datatype xsd:integer ;
+    sh:description "Games at a position, paired with bball:position."@en
+  ] ;
+.
+
+bball:ManagerStint a svs:ClassShape ;
+  rdfs:label "Manager Stint"@en ;
+  rdfs:comment "The managerial analogue of Stint — one person managing one club for one stretch of one season. The register counts an in-year managerial change with its own ordinal, so a club that changed managers in July has two of these for that season."@en ;
+
+  sh:property [
+    sh:path bball:player ;
+    sh:class bball:Person ;
+    sh:maxCount 1 ;
+    sh:description "The manager."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:teamSeason ;
+    sh:class bball:TeamSeason ;
+    sh:maxCount 1 ;
+    sh:description "The club and season managed."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:stintOrdinal ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "1 for the season's first manager, 2 for the replacement."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:games ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Games managed."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:wins ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Games won under this manager."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:losses ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Games lost under this manager."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:standingsRank ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Where the club finished."@en
+  ] ;
+.
+
+bball:AwardHonor a svs:ClassShape ;
+  rdfs:label "Award Honor"@en ;
+  rdfs:comment "One award conferred on one person. Not keyed on person, award, year and league alone: 492 groups of the register's award rows share exactly that tuple, distinguished only by the free-text citation — a weekly honor won twice in one summer. The citation is part of this resource's identity, not a decoration on it."@en ;
+
+  sh:property [
+    sh:path bball:player ;
+    sh:class bball:Person ;
+    sh:maxCount 1 ;
+    sh:description "The recipient."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:award ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The award's name."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:seasonYear ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "The season the award was for."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:league ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The league conferring it."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:sharedHonor ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "Y where the award was tied."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:citation ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The register's free-text qualifier."@en
+  ] ;
+.
+
+bball:HallOfFameBallot a svs:ClassShape ;
+  rdfs:label "Hall of Fame Ballot"@en ;
+  rdfs:comment "One appearance on one Hall of Fame ballot. A candidate appears on many across their eligibility, and in a single year can appear on more than one electorate's ballot — 146 rows of the register do — so the voting body is part of this resource's identity alongside the candidate and the year."@en ;
+
+  sh:property [
+    sh:path bball:player ;
+    sh:class bball:Person ;
+    sh:maxCount 1 ;
+    sh:description "The candidate."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:ballotYear ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "The year of the vote."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:votingBody ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The electorate."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:ballotsCast ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Ballots returned."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:votesReceived ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Votes for this candidate."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:votesNeeded ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Votes required for induction."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:inducted ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "Y or N."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:inducteeCategory ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "Player, Manager, Umpire, Executive, Pioneer, or Pioneer/Executive."@en
+  ] ;
+.
+
+bball:School a svs:ClassShape ;
+  rdfs:label "School"@en ;
+  rdfs:comment "A college or university the register records players as having attended."@en ;
+
+  sh:property [
+    sh:path bball:name ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The school's full name."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:city ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The city."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:state ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The state or province."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:country ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The country."@en
+  ] ;
+.
+
+bball:CollegeAttendance a svs:ClassShape ;
+  rdfs:label "College Attendance"@en ;
+  rdfs:comment "One player at one school in one year. Genuinely multi-valued rather than an attribute of the person: a player attends several schools across several years, and 337 of the register's rows record an attendance whose year is unknown."@en ;
+
+  sh:property [
+    sh:path bball:player ;
+    sh:class bball:Person ;
+    sh:maxCount 1 ;
+    sh:description "The student."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:school ;
+    sh:class bball:School ;
+    sh:maxCount 1 ;
+    sh:description "The school attended."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:seasonYear ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "The academic year, where the register records one."@en
+  ] ;
+.
+
+bball:Ballpark a svs:ClassShape ;
+  rdfs:label "Ballpark"@en ;
+  rdfs:comment "A park major-league home games have been played at, from the register's park list."@en ;
+
+  sh:property [
+    sh:path bball:name ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The park's name."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:city ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The city."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:state ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The state or province."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:country ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:description "The country."@en
+  ] ;
+.
+
+bball:BallparkTenure a svs:ClassShape ;
+  rdfs:label "Ballpark Tenure"@en ;
+  rdfs:comment "One club's home-game residency at one park in one season. Its own class because the underlying relation is many-to-many: a club can split a season across parks, and a park hosts many clubs across its life."@en ;
+
+  sh:property [
+    sh:path bball:ballpark ;
+    sh:class bball:Ballpark ;
+    sh:maxCount 1 ;
+    sh:description "The park."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:teamSeason ;
+    sh:class bball:TeamSeason ;
+    sh:maxCount 1 ;
+    sh:description "The club and season in residence."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:seasonYear ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "The season."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:gamesHosted ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Home games played there."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:seasonAttendance ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:description "Total attendance across them."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:firstHomeGameDate ;
+    sh:datatype xsd:date ;
+    sh:maxCount 1 ;
+    sh:description "The first home game."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:lastHomeGameDate ;
+    sh:datatype xsd:date ;
+    sh:maxCount 1 ;
+    sh:description "The last home game."@en
+  ] ;
+.

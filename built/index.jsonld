@@ -1,0 +1,66 @@
+{
+  "@context": {
+    "@vocab": "https://pkg.semvia.io/sem/built-index/v1#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dct": "http://purl.org/dc/terms/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "tool": {
+      "@id": "prov:wasGeneratedBy",
+      "@type": "@id"
+    },
+    "builtAt": {
+      "@id": "prov:generatedAtTime",
+      "@type": "xsd:dateTime"
+    },
+    "title": {
+      "@id": "dct:title"
+    },
+    "description": {
+      "@id": "dct:description"
+    },
+    "type": {
+      "@id": "rdf:type",
+      "@type": "@id"
+    },
+    "files": {
+      "@id": "dcat:distribution",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "source": {
+      "@id": "prov:wasDerivedFrom",
+      "@type": "@id"
+    },
+    "datasets": {
+      "@id": "https://pkg.semvia.io/sem/built-index/v1#datasets",
+      "@container": "@id"
+    }
+  },
+  "baseIRI": "https://github.com/SemviaIO/lahman-baseball/",
+  "tool": "urn:sem:build:0.1.0",
+  "datasets": {
+    "https://github.com/SemviaIO/lahman-baseball/connection": {
+      "files": [
+        "./connection.ttl"
+      ],
+      "title": "Lahman Database Connection",
+      "description": "The svdb:PostgresConnection descriptor this package's RML logical sources resolve their relations against. Carries host, port, database, user and SSL mode; carries no credential.",
+      "type": "https://pkg.semvia.io/semvia/core/meta-schema#Schema",
+      "source": "../schema/connection.ttl",
+      "hash": "sha256-768e81d31e1c2a32ea9bd620517ecd5cf65391e250fa7e9bd00361c841b1c998"
+    },
+    "https://github.com/SemviaIO/lahman-baseball/ontology": {
+      "files": [
+        "./ontology.ttl"
+      ],
+      "title": "Lahman Baseball Ontology",
+      "description": "The classes and predicates this package's RML mappings project the Lahman database's relations onto. Eleven classes — the register of people, the franchise and the team-season it splits into, the stint that batting/pitching/fielding share, and the association entities for awards, ballots, college attendance and ballpark residency.",
+      "type": "https://pkg.semvia.io/semvia/core/meta-schema#Schema",
+      "source": "../schema/ontology.ttl",
+      "hash": "sha256-9c4f9f82ec0db7f4b8ebdccad2346357c70f2de9a8e0337b23c6767d152f355a"
+    }
+  },
+  "builtAt": "2026-08-29T18:45:18.305Z"
+}

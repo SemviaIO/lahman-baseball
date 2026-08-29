@@ -1,0 +1,30 @@
+Data source attribution
+=======================
+
+This package contains no baseball data. It contains a mapping: an ontology, a
+connection descriptor, and fourteen RML TriplesMaps that describe how to read a
+database. Every value a consumer sees is fetched from that database at query
+time and is never copied into this repository or into anything this repository
+publishes.
+
+The data those mappings read is the Sean Lahman Baseball Database, a season-level
+record of Major League Baseball from 1871 forward.
+
+  Source:         The Lahman Baseball Database
+                  https://sabr.org/lahman-database/
+  Terms of use:   Creative Commons Attribution-ShareAlike 3.0 Unported
+                  https://creativecommons.org/licenses/by-sa/3.0/
+
+The database is made available by Sean Lahman under CC BY-SA 3.0. That is the
+publisher's grant over the data, not ours, and it is reproduced here as
+attribution rather than as a representation — a consumer relying on it should
+read the publisher's terms directly, since they may change.
+
+This package is not affiliated with, endorsed by, or produced in cooperation
+with Sean Lahman, SABR, Major League Baseball, or any club named in the data.
+Club and franchise names appearing in query results are the trademarks of their
+owners and are reproduced from the source database as data.
+
+Everything in this repository that Semvia authored — the ontology, the
+connection descriptor, the mapping documents, the index transcript, and this
+notice — is dedicated to the public domain under CC0 1.0 Universal. See LICENSE.
