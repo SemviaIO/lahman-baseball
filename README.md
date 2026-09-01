@@ -43,7 +43,7 @@ mapping documents.
 | `public.batting` | `BattingStints` | one `bball:Stint`, carrying the batting line |
 | `public.pitching` | `PitchingStints` | the same `bball:Stint`, carrying wins, losses, saves and ERA |
 | `public.fielding` | `FieldingStints` | the same `bball:Stint`, carrying putouts, assists and errors — one row per position, so multi-valued |
-| `public.appearances` | `PositionAppearances` | the same `bball:Stint`, carrying one `bball:position` / `bball:gamesAtPosition` pair per position played |
+| `public.appearances` | `PositionAppearances` | one `bball:PositionAppearance` per position played, linked back to the stint |
 | `public.halloffame` | `HallOfFameBallots` | one `bball:HallOfFameBallot` per candidacy |
 | `public.awardsplayers` | `AwardHonors` | one `bball:AwardHonor` per conferral |
 | `public.schools` | `Schools` | one `bball:School` per row |
@@ -64,14 +64,15 @@ carry, and says which of the mapping's joins run against no index at all.
 
 ## The model
 
-Eleven classes, because baseball has entities lahman's schema does not name.
+Twelve classes, because baseball has entities lahman's schema does not name.
 
 | Class | Subject IRI | Read from |
 | --- | --- | --- |
 | `bball:Person` | `/person/{playerid}` | `people` |
 | `bball:Franchise` | `/franchise/{franchid}` | `teamsfranchises` |
 | `bball:TeamSeason` | `/team-season/{yearid}-{teamid}-{lgid}` | `teams` |
-| `bball:Stint` | `/stint/{playerid}-{yearid}-{stint}-{teamid}` | `batting`, `pitching`, `fielding`, `appearances` |
+| `bball:Stint` | `/stint/{playerid}-{yearid}-{stint}-{teamid}` | `batting`, `pitching`, `fielding` |
+| `bball:PositionAppearance` | `/position-appearance/{playerid}-{yearid}-{stint}-{teamid}-{pos}` | `appearances` |
 | `bball:ManagerStint` | `/manager-stint/{playerid}-{yearid}-{teamid}-{inseason}` | `managers` |
 | `bball:AwardHonor` | `/award-honor/{playerid}-{awardkey}-{yearid}-{lgid}-{citationkey}` | `awardsplayers` |
 | `bball:HallOfFameBallot` | `/hall-of-fame-ballot/{playerid}-{yearid}-{votingbodykey}` | `halloffame` |
@@ -99,9 +100,9 @@ itself to).
 
 ## Caveats worth knowing before you query
 
-**Four relations mint the same stint subject, and only one of them may say
-"home runs".** Batting, pitching, fielding and appearances all key on
-`(playerid, yearid, stint, teamid)`, so all four project onto one `bball:Stint`.
+**Three relations mint the same stint subject, and only one of them may say
+"home runs".** Batting, pitching and fielding all key on
+`(playerid, yearid, stint, teamid)`, so all three project onto one `bball:Stint`.
 That is the point of the model — a two-way player's batting line and his ERA are
 predicates on one resource. But four of the column names collide with opposite
 senses across batting and pitching: home runs, walks, strikeouts and games are
@@ -113,13 +114,24 @@ from the batting relation alone, and the pitching map contributes only the four
 predicates no batting line can carry. Pitching counts that need their own sense —
 hits allowed, innings pitched — are not mapped rather than mapped ambiguously.
 
-**Position facts attach to stint 1.** `appearances` is one row per player, season
-and **team**, with no stint column; the other three relations are one row per
-stint. The pivot therefore pins `'1' AS stint` as a visible constant. For the
-9,725 player-seasons with more than one stint, covering 20,324 appearances rows,
-that ordinal may not be the one batting would give, and 10,634 of the pivot's
-subjects have no batting row at stint 1 at all. The team and the season are
-always right; the ordinal is not always right.
+**A position appearance is its own resource, not a stint.** `appearances` is one
+row per player-season-team with thirteen position columns side by side; the
+mapping pivots them into one row per position, so its grain is finer than a
+stint's. Each row mints a `bball:PositionAppearance` whose subject splices the
+position code, carrying exactly one `bball:position` and one
+`bball:gamesAtPosition`. Ask for the pair off the appearance, not off the stint:
+before `v0.2.0` these rows minted the shared stint subject, which put every
+position of a stint on one resource with nothing pairing a position to its own
+count, and a question about a player's primary position by season answered a
+cross product.
+
+**The appearance's stint link attaches to stint 1.** `appearances` has no stint
+column, so the pivot pins `'1' AS stint` as a visible constant. For the 9,725
+player-seasons with more than one stint, covering 20,324 appearances rows, that
+ordinal may not be the one batting would give, and 10,634 of the pivot's rows
+name a stint no batting row mints — those carry no `bball:stint` at all and are
+reachable through `bball:player` and `bball:teamSeason` instead. The team and the
+season are always right; the ordinal is not always right.
 
 **`bball:putouts`, `bball:assists` and `bball:errors` are multi-valued.**
 `fielding` records one row per position played — 174,332 rows over 127,079

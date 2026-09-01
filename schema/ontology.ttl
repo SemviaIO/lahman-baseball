@@ -53,7 +53,7 @@
 
 <> a svs:Schema ;
   dct:title "Lahman Baseball Ontology"@en ;
-  dct:description "The classes and predicates this package's RML mappings project the Lahman database's relations onto. Eleven classes — the register of people, the franchise and the team-season it splits into, the stint that batting/pitching/fielding share, and the association entities for awards, ballots, college attendance and ballpark residency."@en ;
+  dct:description "The classes and predicates this package's RML mappings project the Lahman database's relations onto. Twelve classes — the register of people, the franchise and the team-season it splits into, the stint that batting/pitching/fielding share, the position appearance that hangs off it, and the association entities for awards, ballots, college attendance and ballpark residency."@en ;
   # Absolute, not the `<../core/meta-schema>` spelling the in-monorepo schemas
   # use: that one resolves against the monorepo layout, and from this package's
   # baseIRI it would land on an IRI nothing publishes.
@@ -181,6 +181,10 @@ bball:teamSeason a rdf:Property ;
   rdfs:label "team season"@en ;
   rdfs:comment "The team-season a stint or a ballpark tenure belongs to."@en .
 
+bball:stint a rdf:Property ;
+  rdfs:label "stint"@en ;
+  rdfs:comment "The stint a position appearance belongs to. Optional rather than required: the appearances relation has no stint column, so the pivot that mints appearances pins stint 1, and 10,634 of its rows name a stint no batting row mints. Those appearances carry no value for this predicate and are still reachable through bball:player and bball:teamSeason."@en .
+
 bball:stintOrdinal a rdf:Property ;
   rdfs:label "stint ordinal"@en ;
   rdfs:comment "1 for a player's first stretch with a team in a season, 2 for the next, and so on. The register's counter for a mid-season trade."@en .
@@ -255,11 +259,11 @@ bball:errors a rdf:Property ;
 
 bball:position a rdf:Property ;
   rdfs:label "position"@en ;
-  rdfs:comment "A fielding position the player appeared at during this stint: P, C, 1B, 2B, 3B, SS, LF, CF, RF, OF, DH, PH, PR. Multi-valued — a stint carries one value per position played. Emitted only by the appearances pivot, paired one-to-one with bball:gamesAtPosition; the fielding relation carries the same fact at a different grain and is deliberately not a second source for this predicate."@en .
+  rdfs:comment "The fielding position an appearance is at: P, C, 1B, 2B, 3B, SS, LF, CF, RF, OF, DH, PH, PR. Exactly one per bball:PositionAppearance, whose subject splices it — that is what keeps it paired with its bball:gamesAtPosition rather than crossed against every other position of the same stint. Emitted only by the appearances pivot; the fielding relation carries the same fact at a different grain and is deliberately not a second source for this predicate."@en .
 
 bball:gamesAtPosition a rdf:Property ;
   rdfs:label "games at position"@en ;
-  rdfs:comment "Games appeared at the paired bball:position, as an integer. Always emitted together with bball:position by the same pivot row."@en .
+  rdfs:comment "Games appeared at the appearance's bball:position, as an integer. Exactly one per bball:PositionAppearance; the two are always emitted together by the same pivot row and share its subject."@en .
 
 ################################################################
 # Award, ballot, college and ballpark predicates
@@ -469,7 +473,7 @@ bball:TeamSeason a svs:ClassShape ;
 
 bball:Stint a svs:ClassShape ;
   rdfs:label "Stint"@en ;
-  rdfs:comment "A player's stretch with one team in one season — the entity the batting, pitching, fielding and appearances relations already share a key on, named. Four TriplesMaps mint this same subject from four tables, so a two-way player's batting line and fielding line land as predicates on one resource rather than on two resources a query would have to rejoin."@en ;
+  rdfs:comment "A player's stretch with one team in one season — the entity the batting, pitching and fielding relations already share a key on, named. Three TriplesMaps mint this same subject from three tables, so a two-way player's batting line and fielding line land as predicates on one resource rather than on two resources a query would have to rejoin. The appearances relation shares the key but not the grain; it mints bball:PositionAppearance and links back with bball:stint."@en ;
 
   sh:property [
     sh:path bball:player ;
@@ -498,7 +502,6 @@ bball:Stint a svs:ClassShape ;
   # spans two positions carries two putout counts on one resource — correct RDF
   # over a source whose grain is finer than the entity's, and a cap of 1 there
   # would report the source as invalid rather than reporting the model as coarse.
-  # bball:position and bball:gamesAtPosition are multi-valued for the same reason.
   sh:property [
     sh:path bball:games ;
     sh:datatype xsd:integer ;
@@ -614,17 +617,51 @@ bball:Stint a svs:ClassShape ;
     sh:datatype xsd:integer ;
     sh:description "Errors, one value per position played."@en
   ] ;
+.
+
+bball:PositionAppearance a svs:ClassShape ;
+  rdfs:label "Position Appearance"@en ;
+  rdfs:comment "One player, one season, one club, one fielding position — the grain the appearances relation actually has once its thirteen g_* columns are pivoted into rows. It is not a bball:Stint: a stint is one row per player-season-team, and minting the stint subject from a per-position relation would put every position of a stint on one resource with nothing pairing a position to its own game count. The subject splices the position code on top of the four stint columns so that pairing is the identity rather than a join the asker has to write."@en ;
 
   sh:property [
     sh:path bball:position ;
     sh:datatype xsd:string ;
-    sh:description "A position appeared at, one value per position."@en
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:description "The position this appearance is at."@en
   ] ;
 
   sh:property [
     sh:path bball:gamesAtPosition ;
     sh:datatype xsd:integer ;
-    sh:description "Games at a position, paired with bball:position."@en
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:description "Games appeared at that position. The pivot filters to > 0, so a zero never reaches the graph."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:player ;
+    sh:class bball:Person ;
+    sh:maxCount 1 ;
+    sh:description "Whose appearance this is."@en
+  ] ;
+
+  sh:property [
+    sh:path bball:teamSeason ;
+    sh:class bball:TeamSeason ;
+    sh:maxCount 1 ;
+    sh:description "The club and season the appearance was with."@en
+  ] ;
+
+  # Not sh:minCount 1. The appearances relation has no stint column, so the pivot
+  # pins stint 1 and 10,634 of its rows name a stint no batting row mints; those
+  # appearances carry no link at all. Requiring one would report the register as
+  # invalid for a gap that is the source's, not the mapping's.
+  sh:property [
+    sh:path bball:stint ;
+    sh:class bball:Stint ;
+    sh:maxCount 1 ;
+    sh:description "The stint this appearance falls in, where the batting relation has a row on the same four-column key."@en
   ] ;
 .
 
