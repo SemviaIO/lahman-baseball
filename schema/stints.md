@@ -2,32 +2,37 @@
 
 ::[mappedBy](https://pkg.semvia.io/semvia/folio/mapping#mappedBy) RmlMappingMap
 
-Projects `public.batting`, `public.pitching`, `public.fielding` and
-`public.appearances` onto one class, `bball:Stint`.
+Projects `public.batting`, `public.pitching` and `public.fielding` onto one
+class, `bball:Stint`, and `public.appearances` onto `bball:PositionAppearance`.
 
-> **Four relations, one subject.** The register already agrees that a player's
-> batting line, pitching line, fielding line and appearance line for a stretch
-> with one club in one season are facts about the same thing: all four tables key
-> on `(playerid, yearid, stint, teamid)`. It just has no name for that thing, so
-> a question that spans two of them is a join the asker has to write. The four
+> **Four relations, three minters.** The register already agrees that a player's
+> batting line, pitching line and fielding line for a stretch with one club in
+> one season are facts about the same thing: all three tables key on
+> `(playerid, yearid, stint, teamid)`. It just has no name for that thing, so a
+> question that spans two of them is a join the asker has to write. The three
 > TriplesMaps below mint the **same** subject template, so the join is already
 > made and a two-way player's home runs and his earned run average are predicates
 > on one resource.
 >
+> `public.appearances` is the fourth relation and does not join that club. Its
+> map pivots one row into thirteen, one per position played, so its grain is
+> finer than a stint and its subject has to be too: it mints
+> `bball:PositionAppearance` and reaches the stint family through `bball:stint`.
+> The note under it says why a subject must be a key of the relation minting it.
+>
 > Every one of the 57,630 pitching rows and every one of the 127,079 distinct
 > fielding stints has a batting row on the same four-column key — checked, not
-> assumed — so the batting map is a superset of both. The appearances pivot is
-> the exception, and the note under it says why.
+> assumed — so the batting map is a superset of both, and it is the parent the
+> appearance's `bball:stint` join names.
 
-> **Why all four maps repeat the identity edges.** `bball:player`, the
-> `bball:teamSeason` edge and the `a bball:Stint` class triple are emitted by
-> every map here, not by one designated map. Two reasons. A mapping document
-> should be readable and correct on its own, without a reader having to know that
-> deleting a sibling document would strand these subjects. And the repetition
-> costs nothing: RDF is a set, the federation engine's unfolding closes with a
-> dedup barrier over the full solution tuple before any `GROUP BY` folds it, so
-> four identical `?stint bball:player ?p` rows collapse to one long before a
-> `SUM` sees them. That barrier is the same one #4788's fix seats the aggregate
+> **Why every map repeats the identity edges.** `bball:player`, the
+> `bball:teamSeason` edge and the class triple are emitted by every map here, not
+> by one designated map. Two reasons. A mapping document should be readable and
+> correct on its own, without a reader having to know that deleting a sibling
+> document would strand these subjects. And the repetition costs nothing: RDF is
+> a set, the federation engine's unfolding closes with a dedup barrier over the
+> full solution tuple before any `GROUP BY` folds it, so three identical
+> `?stint bball:player ?p` rows collapse to one long before a `SUM` sees them. That barrier is the same one #4788's fix seats the aggregate
 > above; the corpus entries that sum over stints are its live witnesses.
 
 > **The predicate carve-out, restated where it bites.** Batting and pitching mint
@@ -215,11 +220,14 @@ That is the honest projection of a source whose grain is finer than the entity's
 and the `bball:Stint` shape declines to cap those paths at 1 for exactly that
 reason: a cap would report the register as invalid when what is actually true is
 that the model is one level coarser than the table. A query that wants per-
-position fielding numbers needs a resource per position, which this package does
-not mint; a query that wants a stint's total needs `SUM`, not a lookup.
+position putouts, assists or errors needs a resource per position, which this
+package does not mint — `bball:PositionAppearance` carries games at a position
+and nothing else; a query that wants a stint's fielding total needs `SUM`, not a
+lookup.
 
 This map does **not** emit `bball:position`. The appearances pivot below does,
-at a grain the two would otherwise fight over — see the note there.
+on its own subject, at the grain the position code actually keys — see the note
+there.
 
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
@@ -275,7 +283,30 @@ position did they play" unable to be written without naming all thirteen.
 The `rml:SQL2008Query` source below turns the columns into rows — thirteen
 `UNION ALL` branches, one per position, each lifting the position code into a
 `pos` value and the count into `gamesatposition`. One predicate pair comes out:
-`bball:position` and `bball:gamesAtPosition`, paired one-to-one per row.
+`bball:position` and `bball:gamesAtPosition`, paired one-to-one per row — and one
+subject per row to keep them paired.
+
+> **The subject is per (stint, position), because a subject must be a key of its
+> logical source.** The template splices `pos` on top of the four stint columns.
+> Minting the shared stint subject here — which this package did through `v0.1.0`
+> — put up to thirteen `bball:position` values and thirteen
+> `bball:gamesAtPosition` values on one resource with nothing pairing the i-th of
+> one to the i-th of the other, so asking for a position beside its game count
+> was a cross product by RDF semantics rather than a lookup. Measured against SQL
+> on the same question, that model answered 76 rows where the register answers
+> 37, every spurious row a position from one pivot row carrying the count from
+> another. `pos` splices raw: all thirteen codes are unreserved ASCII, and this
+> engine verifies IRI safety over the live data at activation rather than
+> percent-encoding.
+
+> **Why `bball:stint` is a join and not a second template.** The link back to the
+> stint family is a `rml:RefObjectMap` onto `BattingStints` carrying all four key
+> columns, not an object map that re-renders the stint template. The federation
+> engine binds an object map only when it resolves to a single source column, so
+> a four-column template spelled as an object would decline every query that
+> touched the link; a multi-column subject template is admitted on a ref-object
+> join leg. `BattingStints` is the parent because batting is the family's
+> superset relation, per the note at the top of this document.
 
 > **Why this is the escape hatch and not a workaround.** RML's own answer to a
 > source whose shape does not match the model is RML-LV's `rml:logicalView`, and
@@ -310,25 +341,32 @@ The `rml:SQL2008Query` source below turns the columns into rows — thirteen
 > `'1' AS stint` — a constant, visible in the SQL text above any reader's
 > objection. For the 9,725 player-seasons with more than one stint, covering
 > 20,324 appearances rows, that constant is wrong whenever the appearance belongs
-> to stint 2 or later, and 10,634 of the pivot's subjects have no batting row at
-> stint 1 at all. Those position facts attach to a stint-1 subject for the right
-> team and the right season, and to a stint ordinal that may not be the one the
-> other three relations would give. Recovering the true ordinal means joining
-> back to `batting` on the team, which is a fifth relation inside a source query
-> whose whole purpose was to reshape a fourth — the cost is not worth it for a
-> package whose job is to exercise a federation engine, and a reader who needs
-> per-stint position numbers should know they are not here.
+> to stint 2 or later, and 10,634 of the pivot's rows name a stint no batting row
+> mints. Those rows lose the `bball:stint` link triple and keep their position,
+> games, player and team season — which is why the ontology records the link as
+> optional. The rest attach to a stint for the right team and the right season,
+> and to a stint ordinal that may not be the one the other three relations would
+> give. Recovering the true ordinal means joining back to `batting` on the team,
+> which is a fifth relation inside a source query whose whole purpose was to
+> reshape a fourth — the cost is not worth it for a package whose job is to
+> exercise a federation engine, and a reader who needs per-stint position numbers
+> should know they are not here.
 >
 > The `> 0` filter in the outer `WHERE` drops the position-seasons a player never
 > appeared in. Without it every row would carry thirteen position facts, nearly
 > all of them zero, and the mapping would assert that Derek Jeter caught in zero
 > games — a triple that is true and useless. 324,812 rows survive the filter.
 
+> **The derived table is aliased `positions`, not the obvious `pivot`.** The
+> `rml:SQL2008Query` text is parsed under sqlparser's generic dialect, which
+> reserves PIVOT as a table-factor keyword and aborts the whole source package on
+> it. Postgres itself accepts either name.
+
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
-::[iterator](http://w3id.org/rml/iterator) "SELECT playerid, yearid, stint, teamid, lgid, pos, gamesatposition FROM (SELECT playerid, yearid, '1' AS stint, teamid, lgid, 'P' AS pos, CAST(g_p AS integer) AS gamesatposition FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'C', CAST(g_c AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '1B', CAST(g_1b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '2B', CAST(g_2b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '3B', CAST(g_3b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'SS', CAST(g_ss AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'LF', CAST(g_lf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'CF', CAST(g_cf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'RF', CAST(g_rf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'OF', CAST(g_of AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'DH', CAST(g_dh AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'PH', CAST(g_ph AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'PR', CAST(g_pr AS integer) FROM public.appearances) pivot WHERE gamesatposition > 0"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}"
-::[class](http://w3id.org/rml/class) [Stint](ontology#Stint)
+::[iterator](http://w3id.org/rml/iterator) "SELECT playerid, yearid, stint, teamid, lgid, pos, gamesatposition FROM (SELECT playerid, yearid, '1' AS stint, teamid, lgid, 'P' AS pos, CAST(g_p AS integer) AS gamesatposition FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'C', CAST(g_c AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '1B', CAST(g_1b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '2B', CAST(g_2b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '3B', CAST(g_3b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'SS', CAST(g_ss AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'LF', CAST(g_lf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'CF', CAST(g_cf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'RF', CAST(g_rf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'OF', CAST(g_of AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'DH', CAST(g_dh AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'PH', CAST(g_ph AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'PR', CAST(g_pr AS integer) FROM public.appearances) positions WHERE gamesatposition > 0"
+::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/position-appearance/{playerid}-{yearid}-{stint}-{teamid}-{pos}"
+::[class](http://w3id.org/rml/class) [PositionAppearance](ontology#PositionAppearance)
 
 ### player
 
@@ -350,10 +388,31 @@ The `rml:SQL2008Query` source below turns the columns into rows — thirteen
   ::[child](http://w3id.org/rml/child) "lgid"
   ::[parent](http://w3id.org/rml/parent) "lgid"
 
+### stint
+
+The link back to the stint family. All four key columns join, and all four are
+load-bearing: dropping `teamid` fans an appearance across every club the player
+played for that season, dropping `yearid` across every season.
+
+::[parentTriplesMap](http://w3id.org/rml/parentTriplesMap) [BattingStints](#BattingStints)
+::[joinCondition](http://w3id.org/rml/joinCondition)
+  ::[child](http://w3id.org/rml/child) "playerid"
+  ::[parent](http://w3id.org/rml/parent) "playerid"
+::[joinCondition](http://w3id.org/rml/joinCondition)
+  ::[child](http://w3id.org/rml/child) "yearid"
+  ::[parent](http://w3id.org/rml/parent) "yearid"
+::[joinCondition](http://w3id.org/rml/joinCondition)
+  ::[child](http://w3id.org/rml/child) "stint"
+  ::[parent](http://w3id.org/rml/parent) "stint"
+::[joinCondition](http://w3id.org/rml/joinCondition)
+  ::[child](http://w3id.org/rml/child) "teamid"
+  ::[parent](http://w3id.org/rml/parent) "teamid"
+
 ### position
 
 One of P, C, 1B, 2B, 3B, SS, LF, CF, RF, OF, DH, PH, PR — the branch's own
-constant, not a source column. Multi-valued on a stint by design.
+constant, not a source column. Exactly one per appearance; the subject splices
+it.
 
 ::[reference](http://w3id.org/rml/reference) "pos"
 

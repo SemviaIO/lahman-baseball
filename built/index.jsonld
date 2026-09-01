@@ -88,10 +88,10 @@
         "./ontology.ttl"
       ],
       "title": "Lahman Baseball Ontology",
-      "description": "The classes and predicates this package's RML mappings project the Lahman database's relations onto. Eleven classes — the register of people, the franchise and the team-season it splits into, the stint that batting/pitching/fielding share, and the association entities for awards, ballots, college attendance and ballpark residency.",
+      "description": "The classes and predicates this package's RML mappings project the Lahman database's relations onto. Twelve classes — the register of people, the franchise and the team-season it splits into, the stint that batting/pitching/fielding share, the position appearance that hangs off it, and the association entities for awards, ballots, college attendance and ballpark residency.",
       "type": "https://pkg.semvia.io/semvia/core/meta-schema#Schema",
       "source": "../schema/ontology.ttl",
-      "hash": "sha256-c18c714687330dc1f2cedbdad1a4222f01e7b680c9ff9cadf720541f16052f82"
+      "hash": "sha256-93a0522e916c635d520d9974f8db5de5e8f19c14ef8fa23b302252d2dd20cd61"
     },
     "https://github.com/SemviaIO/lahman-baseball/people": {
       "files": [
@@ -107,8 +107,8 @@
       ],
       "title": "Stints",
       "source": "../schema/stints.md",
-      "hash": "sha256-d0573c41462dc8c9ecce14463dfcce9b9d1388f2d77086913e2e63a244247757"
+      "hash": "sha256-92d97e985f8f1683bb1c7b20c891318b5070c374a9a9232112f88286c8e54a2e"
     }
   },
-  "builtAt": "2026-08-29T19:02:29.704Z"
+  "builtAt": "2026-09-01T20:23:42.621Z"
 }

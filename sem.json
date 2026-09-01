@@ -3,7 +3,7 @@
   "@type": "https://pkg.semvia.io/semvia/core/semantic-package#SemanticPackage",
   "title": "Lahman Baseball",
   "description": "A conceptual layer over the Sean Lahman Baseball Database and the RML mapping that projects its Postgres tables onto it. Ships no data.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "owner": "SemviaIO",
   "baseIRI": "https://github.com/SemviaIO/lahman-baseball",
   "source": "./schema",

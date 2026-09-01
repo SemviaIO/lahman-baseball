@@ -8,7 +8,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 <> a svs:Schema ;
 	dct:title "Lahman Baseball Ontology"@en ;
-	dct:description "The classes and predicates this package's RML mappings project the Lahman database's relations onto. Eleven classes — the register of people, the franchise and the team-season it splits into, the stint that batting/pitching/fielding share, and the association entities for awards, ballots, college attendance and ballpark residency."@en ;
+	dct:description "The classes and predicates this package's RML mappings project the Lahman database's relations onto. Twelve classes — the register of people, the franchise and the team-season it splits into, the stint that batting/pitching/fielding share, the position appearance that hangs off it, and the association entities for awards, ballots, college attendance and ballpark residency."@en ;
 	svds:imports <https://pkg.semvia.io/semvia/core/meta-schema> .
 <ontology/.well-known/genid/turtle/8da1ed21c46e5522b488c607beae9aba91ad798d> a sh:PrefixDeclaration ;
 	sh:prefix "bball" ;
@@ -71,6 +71,9 @@ bball:player a rdf:Property ;
 bball:teamSeason a rdf:Property ;
 	rdfs:label "team season"@en ;
 	rdfs:comment "The team-season a stint or a ballpark tenure belongs to."@en .
+bball:stint a rdf:Property ;
+	rdfs:label "stint"@en ;
+	rdfs:comment "The stint a position appearance belongs to. Optional rather than required: the appearances relation has no stint column, so the pivot that mints appearances pins stint 1, and 10,634 of its rows name a stint no batting row mints. Those appearances carry no value for this predicate and are still reachable through bball:player and bball:teamSeason."@en .
 bball:stintOrdinal a rdf:Property ;
 	rdfs:label "stint ordinal"@en ;
 	rdfs:comment "1 for a player's first stretch with a team in a season, 2 for the next, and so on. The register's counter for a mid-season trade."@en .
@@ -127,10 +130,10 @@ bball:errors a rdf:Property ;
 	rdfs:comment "Fielding errors charged, as an integer."@en .
 bball:position a rdf:Property ;
 	rdfs:label "position"@en ;
-	rdfs:comment "A fielding position the player appeared at during this stint: P, C, 1B, 2B, 3B, SS, LF, CF, RF, OF, DH, PH, PR. Multi-valued — a stint carries one value per position played. Emitted only by the appearances pivot, paired one-to-one with bball:gamesAtPosition; the fielding relation carries the same fact at a different grain and is deliberately not a second source for this predicate."@en .
+	rdfs:comment "The fielding position an appearance is at: P, C, 1B, 2B, 3B, SS, LF, CF, RF, OF, DH, PH, PR. Exactly one per bball:PositionAppearance, whose subject splices it — that is what keeps it paired with its bball:gamesAtPosition rather than crossed against every other position of the same stint. Emitted only by the appearances pivot; the fielding relation carries the same fact at a different grain and is deliberately not a second source for this predicate."@en .
 bball:gamesAtPosition a rdf:Property ;
 	rdfs:label "games at position"@en ;
-	rdfs:comment "Games appeared at the paired bball:position, as an integer. Always emitted together with bball:position by the same pivot row."@en .
+	rdfs:comment "Games appeared at the appearance's bball:position, as an integer. Exactly one per bball:PositionAppearance; the two are always emitted together by the same pivot row and share its subject."@en .
 bball:award a rdf:Property ;
 	rdfs:label "award"@en ;
 	rdfs:comment "The award's name as the register spells it — 'Most Valuable Player', 'NLCS MVP', 'Player of the Week'. A literal token rather than an IRI: the register has no award registry to mint one from."@en .
@@ -275,7 +278,7 @@ bball:TeamSeason sh:property <ontology/.well-known/genid/turtle/8535509cc9f028e7
 bball:TeamSeason sh:property <ontology/.well-known/genid/turtle/f7ea4b09224a6376c7f4f70943f9b270f0dcd7dc> .
 bball:Stint a svs:ClassShape ;
 	rdfs:label "Stint"@en ;
-	rdfs:comment "A player's stretch with one team in one season — the entity the batting, pitching, fielding and appearances relations already share a key on, named. Four TriplesMaps mint this same subject from four tables, so a two-way player's batting line and fielding line land as predicates on one resource rather than on two resources a query would have to rejoin."@en .
+	rdfs:comment "A player's stretch with one team in one season — the entity the batting, pitching and fielding relations already share a key on, named. Three TriplesMaps mint this same subject from three tables, so a two-way player's batting line and fielding line land as predicates on one resource rather than on two resources a query would have to rejoin. The appearances relation shares the key but not the grain; it mints bball:PositionAppearance and links back with bball:stint."@en .
 <ontology/.well-known/genid/turtle/2fa9975199153e146b0a3e2e98b93bf328218ec1> sh:path bball:player ;
 	sh:class bball:Person ;
 	sh:maxCount 1 ;
@@ -373,14 +376,36 @@ bball:Stint sh:property <ontology/.well-known/genid/turtle/2267ccf70702f3c4b6148
 	sh:datatype xsd:integer ;
 	sh:description "Errors, one value per position played."@en .
 bball:Stint sh:property <ontology/.well-known/genid/turtle/066a333fccdc9ae276a38a4214efb40820d160c9> .
-<ontology/.well-known/genid/turtle/1bdee3413752b1eaa9926621952d26dabd73627b> sh:path bball:position ;
+bball:PositionAppearance a svs:ClassShape ;
+	rdfs:label "Position Appearance"@en ;
+	rdfs:comment "One player, one season, one club, one fielding position — the grain the appearances relation actually has once its thirteen g_* columns are pivoted into rows. It is not a bball:Stint: a stint is one row per player-season-team, and minting the stint subject from a per-position relation would put every position of a stint on one resource with nothing pairing a position to its own game count. The subject splices the position code on top of the four stint columns so that pairing is the identity rather than a join the asker has to write."@en .
+<ontology/.well-known/genid/turtle/27c908af58fc914d48463661623387b72e130d4c> sh:path bball:position ;
 	sh:datatype xsd:string ;
-	sh:description "A position appeared at, one value per position."@en .
-bball:Stint sh:property <ontology/.well-known/genid/turtle/1bdee3413752b1eaa9926621952d26dabd73627b> .
-<ontology/.well-known/genid/turtle/07632a8fbc6fd057282f65df5ddd1d60ec28d81a> sh:path bball:gamesAtPosition ;
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:description "The position this appearance is at."@en .
+bball:PositionAppearance sh:property <ontology/.well-known/genid/turtle/27c908af58fc914d48463661623387b72e130d4c> .
+<ontology/.well-known/genid/turtle/e09feb2a2ec8eb40d9ecead3e2b3c14a512273f9> sh:path bball:gamesAtPosition ;
 	sh:datatype xsd:integer ;
-	sh:description "Games at a position, paired with bball:position."@en .
-bball:Stint sh:property <ontology/.well-known/genid/turtle/07632a8fbc6fd057282f65df5ddd1d60ec28d81a> .
+	sh:minCount 1 ;
+	sh:maxCount 1 ;
+	sh:description "Games appeared at that position. The pivot filters to > 0, so a zero never reaches the graph."@en .
+bball:PositionAppearance sh:property <ontology/.well-known/genid/turtle/e09feb2a2ec8eb40d9ecead3e2b3c14a512273f9> .
+<ontology/.well-known/genid/turtle/0ba1e2b848bd1325342f082a2b9eb737bf4cb1cc> sh:path bball:player ;
+	sh:class bball:Person ;
+	sh:maxCount 1 ;
+	sh:description "Whose appearance this is."@en .
+bball:PositionAppearance sh:property <ontology/.well-known/genid/turtle/0ba1e2b848bd1325342f082a2b9eb737bf4cb1cc> .
+<ontology/.well-known/genid/turtle/0125ae1fab21734e9ad9cdd921a4c891115d1137> sh:path bball:teamSeason ;
+	sh:class bball:TeamSeason ;
+	sh:maxCount 1 ;
+	sh:description "The club and season the appearance was with."@en .
+bball:PositionAppearance sh:property <ontology/.well-known/genid/turtle/0125ae1fab21734e9ad9cdd921a4c891115d1137> .
+<ontology/.well-known/genid/turtle/c36f7103b360d17ace909c9eb47ab5b6fbe1aec4> sh:path bball:stint ;
+	sh:class bball:Stint ;
+	sh:maxCount 1 ;
+	sh:description "The stint this appearance falls in, where the batting relation has a row on the same four-column key."@en .
+bball:PositionAppearance sh:property <ontology/.well-known/genid/turtle/c36f7103b360d17ace909c9eb47ab5b6fbe1aec4> .
 bball:ManagerStint a svs:ClassShape ;
 	rdfs:label "Manager Stint"@en ;
 	rdfs:comment "The managerial analogue of Stint — one person managing one club for one stretch of one season. The register counts an in-year managerial change with its own ordinal, so a club that changed managers in July has two of these for that season."@en .

@@ -95,9 +95,12 @@ CREATE INDEX IF NOT EXISTS idx_teams_name
 -- that matter here start from a person and gather a career — "every stint for
 -- this player" — so the leading column is what prunes, and `yearid` orders the
 -- result the way the query wants to read it. Adding `stint` and `teamid` would
--- make the index cover the subject template exactly, but no query in the corpus
--- looks a stint up by its full key, and none of the three relations has a UNIQUE
--- constraint to fuse against regardless.
+-- make the index cover the subject template exactly, and `batting` is now also
+-- the parent side of the appearance's `bball:stint` join, which relates all four
+-- columns. That join is left unindexed on purpose: no corpus entry traverses the
+-- link yet, and none of the three relations has a UNIQUE constraint to fuse
+-- against regardless. A query that does traverse it will hash-join against a
+-- `(playerid, yearid)` scan, and this is the line to revisit when one does.
 --
 -- Note the asymmetry with `fielding`: it holds 174,332 rows over 127,079
 -- distinct stints, because it records one row per position played. The index
