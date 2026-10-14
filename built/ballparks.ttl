@@ -7,106 +7,107 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix svrl: <https://pkg.semvia.io/semvia/rml/lookup#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-:BallparkTenures rml:logicalSource <ballparks/.well-known/genid/markdown/BallparkTenures-logicalsource> ;
-	rml:predicateObjectMap <ballparks/.well-known/genid/markdown/BallparkTenures-ballpark> , <ballparks/.well-known/genid/markdown/BallparkTenures-firsthomegamedate> , <ballparks/.well-known/genid/markdown/BallparkTenures-gameshosted> , <ballparks/.well-known/genid/markdown/BallparkTenures-lasthomegamedate> , <ballparks/.well-known/genid/markdown/BallparkTenures-seasonattendance> , <ballparks/.well-known/genid/markdown/BallparkTenures-seasonyear> , <ballparks/.well-known/genid/markdown/BallparkTenures-teamseason> ;
-	rml:subjectMap <ballparks/.well-known/genid/markdown/BallparkTenures-subjectmap> ;
+:BallparkTenures rml:logicalSource _:c14n13 ;
+	rml:predicateObjectMap _:c14n28 , _:c14n3 , _:c14n25 , _:c14n12 , _:c14n23 , _:c14n0 , _:c14n26 ;
+	rml:subjectMap _:c14n19 ;
 	a rml:TriplesMap ;
 	rdfs:comment "One bball:BallparkTenure per row of public.homegames — 3,303 rows, injective\non year, team and park.\nThe register spells this relation's key columns yearkey, teamkey and\nleaguekey where every other relation spells them yearid, teamid and lgid.\nThe mapping does not rename them — a reference must name the column the source\ndelivers — but the join conditions below are where that inconsistency stops being\nthe consumer's problem, because bball:teamSeason reconciles the two spellings\nonce and every query afterwards sees one edge." ;
 	rdfs:label "BallparkTenures" .
-:Ballparks rml:logicalSource <ballparks/.well-known/genid/markdown/Ballparks-logicalsource> ;
-	rml:predicateObjectMap <ballparks/.well-known/genid/markdown/Ballparks-city> , <ballparks/.well-known/genid/markdown/Ballparks-country> , <ballparks/.well-known/genid/markdown/Ballparks-name> , <ballparks/.well-known/genid/markdown/Ballparks-state> ;
-	rml:subjectMap <ballparks/.well-known/genid/markdown/Ballparks-subjectmap> ;
+:Ballparks rml:logicalSource _:c14n17 ;
+	rml:predicateObjectMap _:c14n16 , _:c14n11 , _:c14n24 , _:c14n14 ;
+	rml:subjectMap _:c14n9 ;
 	a rml:TriplesMap ;
 	rdfs:comment "One bball:Ballpark per row of public.parks — 345 rows, keyed on parkkey,\nwhich is distinct and non-NULL throughout. The relation also carries id and\nparkalias; neither is mapped. id is a surrogate with no meaning outside the\ndump, and parkalias is a semicolon-joined list of former names that would need\nsplitting before it could be more than a string." ;
 	rdfs:label "Ballparks" .
-<ballparks/.well-known/genid/markdown/BallparkTenures-ballpark-objectmap-joincondition> rml:child "parkkey" ;
+_:c14n29 rml:child "parkkey" ;
 	rml:parent "parkkey" ;
 	a rml:Join .
-<ballparks/.well-known/genid/markdown/BallparkTenures-ballpark-objectmap> rml:joinCondition <ballparks/.well-known/genid/markdown/BallparkTenures-ballpark-objectmap-joincondition> ;
+_:c14n6 rml:joinCondition _:c14n29 ;
 	rml:parentTriplesMap :Ballparks ;
 	a rml:RefObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-ballpark> rml:objectMap <ballparks/.well-known/genid/markdown/BallparkTenures-ballpark-objectmap> ;
+_:c14n28 rml:objectMap _:c14n6 ;
 	rml:predicate <ontology#ballpark> ;
 	a rml:PredicateObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-firsthomegamedate-objectmap> rml:datatype xsd:date ;
+_:c14n22 rml:datatype xsd:date ;
 	rml:reference "spanfirst" ;
 	a rml:ObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-firsthomegamedate> rml:objectMap <ballparks/.well-known/genid/markdown/BallparkTenures-firsthomegamedate-objectmap> ;
+_:c14n3 rml:objectMap _:c14n22 ;
 	rml:predicate <ontology#firstHomeGameDate> ;
 	a rml:PredicateObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-gameshosted-objectmap> rml:datatype xsd:integer ;
+_:c14n15 rml:datatype xsd:integer ;
 	rml:reference "gameshosted" ;
 	a rml:ObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-gameshosted> rml:objectMap <ballparks/.well-known/genid/markdown/BallparkTenures-gameshosted-objectmap> ;
+_:c14n25 rml:objectMap _:c14n15 ;
 	rml:predicate <ontology#gamesHosted> ;
 	a rml:PredicateObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-lasthomegamedate-objectmap> rml:datatype xsd:date ;
+_:c14n10 rml:datatype xsd:date ;
 	rml:reference "spanlast" ;
 	a rml:ObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-lasthomegamedate> rml:objectMap <ballparks/.well-known/genid/markdown/BallparkTenures-lasthomegamedate-objectmap> ;
+_:c14n12 rml:objectMap _:c14n10 ;
 	rml:predicate <ontology#lastHomeGameDate> ;
 	a rml:PredicateObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-logicalsource> rml:iterator "SELECT yearkey, teamkey, leaguekey, parkkey, spanfirst, spanlast, CAST(yearkey AS integer) AS seasonyear, CAST(games AS integer) AS gameshosted, CAST(attendance AS integer) AS seasonattendance FROM public.homegames" ;
+_:c14n13 rml:iterator "SELECT yearkey, teamkey, leaguekey, parkkey, spanfirst, spanlast, CAST(yearkey AS integer) AS seasonyear, CAST(games AS integer) AS gameshosted, CAST(attendance AS integer) AS seasonattendance FROM public.homegames" ;
 	rml:referenceFormulation rml:SQL2008Query ;
 	rml:source <connection#semvia-test-data> ;
 	a rml:LogicalSource .
-<ballparks/.well-known/genid/markdown/BallparkTenures-seasonattendance-objectmap> rml:datatype xsd:integer ;
+_:c14n1 rml:datatype xsd:integer ;
 	rml:reference "seasonattendance" ;
 	a rml:ObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-seasonattendance> rml:objectMap <ballparks/.well-known/genid/markdown/BallparkTenures-seasonattendance-objectmap> ;
+_:c14n23 rml:objectMap _:c14n1 ;
 	rml:predicate <ontology#seasonAttendance> ;
 	a rml:PredicateObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-seasonyear-objectmap> rml:datatype xsd:integer ;
+_:c14n5 rml:datatype xsd:integer ;
 	rml:reference "seasonyear" ;
 	a rml:ObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-seasonyear> rml:objectMap <ballparks/.well-known/genid/markdown/BallparkTenures-seasonyear-objectmap> ;
+_:c14n0 rml:objectMap _:c14n5 ;
 	rml:predicate <ontology#seasonYear> ;
 	a rml:PredicateObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-subjectmap> rml:class <ontology#BallparkTenure> ;
-	rml:template "https://github.com/SemviaIO/lahman-baseball/ballpark-tenure/{yearkey}-{teamkey}-{parkkey}" ;
+_:c14n19 rml:class <ontology#BallparkTenure> ;
+	rml:template "https://pkg.semvia.io/semvia/lahman-baseball/ballpark-tenure/{yearkey}-{teamkey}-{parkkey}" ;
 	a rml:SubjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-teamseason-objectmap-joincondition> rml:child "teamkey" ;
+_:c14n18 rml:child "teamkey" ;
 	rml:parent "teamid" ;
 	a rml:Join .
-<ballparks/.well-known/genid/markdown/BallparkTenures-teamseason-objectmap-joincondition~1> rml:child "yearkey" ;
+_:c14n21 rml:child "yearkey" ;
 	rml:parent "yearid" ;
 	a rml:Join .
-<ballparks/.well-known/genid/markdown/BallparkTenures-teamseason-objectmap-joincondition~2> rml:child "leaguekey" ;
+_:c14n27 rml:child "leaguekey" ;
 	rml:parent "lgid" ;
 	a rml:Join .
-<ballparks/.well-known/genid/markdown/BallparkTenures-teamseason-objectmap> rml:joinCondition <ballparks/.well-known/genid/markdown/BallparkTenures-teamseason-objectmap-joincondition> , <ballparks/.well-known/genid/markdown/BallparkTenures-teamseason-objectmap-joincondition~1> , <ballparks/.well-known/genid/markdown/BallparkTenures-teamseason-objectmap-joincondition~2> ;
+_:c14n7 rml:joinCondition _:c14n18 , _:c14n21 , _:c14n27 ;
 	rml:parentTriplesMap <franchises-and-seasons#TeamSeasons> ;
 	a rml:RefObjectMap .
-<ballparks/.well-known/genid/markdown/BallparkTenures-teamseason> rml:objectMap <ballparks/.well-known/genid/markdown/BallparkTenures-teamseason-objectmap> ;
+_:c14n26 rml:objectMap _:c14n7 ;
 	rml:predicate <ontology#teamSeason> ;
 	a rml:PredicateObjectMap .
-<ballparks/.well-known/genid/markdown/Ballparks-city-objectmap> rml:reference "city" ;
+_:c14n8 rml:reference "city" ;
 	a rml:ObjectMap .
-<ballparks/.well-known/genid/markdown/Ballparks-city> rml:objectMap <ballparks/.well-known/genid/markdown/Ballparks-city-objectmap> ;
+_:c14n16 rml:objectMap _:c14n8 ;
 	rml:predicate <ontology#city> ;
 	a rml:PredicateObjectMap .
-<ballparks/.well-known/genid/markdown/Ballparks-country-objectmap> rml:reference "country" ;
+_:c14n20 rml:reference "country" ;
 	a rml:ObjectMap .
-<ballparks/.well-known/genid/markdown/Ballparks-country> rml:objectMap <ballparks/.well-known/genid/markdown/Ballparks-country-objectmap> ;
+_:c14n11 rml:objectMap _:c14n20 ;
 	rml:predicate <ontology#country> ;
 	a rml:PredicateObjectMap .
-<ballparks/.well-known/genid/markdown/Ballparks-logicalsource> rml:iterator "public.parks" ;
+_:c14n17 rml:iterator "public.parks" ;
 	rml:referenceFormulation rml:SQL2008Table ;
 	rml:source <connection#semvia-test-data> ;
 	a rml:LogicalSource .
-<ballparks/.well-known/genid/markdown/Ballparks-name-objectmap> rml:reference "parkname" ;
+_:c14n4 rml:reference "parkname" ;
 	a rml:ObjectMap .
-<ballparks/.well-known/genid/markdown/Ballparks-name> rml:objectMap <ballparks/.well-known/genid/markdown/Ballparks-name-objectmap> ;
+_:c14n24 rml:objectMap _:c14n4 ;
 	rml:predicate <ontology#name> ;
 	a rml:PredicateObjectMap .
-<ballparks/.well-known/genid/markdown/Ballparks-state-objectmap> rml:reference "state" ;
+_:c14n2 rml:reference "state" ;
 	a rml:ObjectMap .
-<ballparks/.well-known/genid/markdown/Ballparks-state> rml:objectMap <ballparks/.well-known/genid/markdown/Ballparks-state-objectmap> ;
+_:c14n14 rml:objectMap _:c14n2 ;
 	rml:predicate <ontology#state> ;
 	a rml:PredicateObjectMap .
-<ballparks/.well-known/genid/markdown/Ballparks-subjectmap> rml:class <ontology#Ballpark> ;
-	rml:template "https://github.com/SemviaIO/lahman-baseball/park/{parkkey}" ;
+_:c14n9 rml:class <ontology#Ballpark> ;
+	rml:template "https://pkg.semvia.io/semvia/lahman-baseball/park/{parkkey}" ;
 	a rml:SubjectMap .
-<> dct:title "Ballparks"@en ;
+<> dct:conformsTo <https://pkg.semvia.io/semvia/rml/profiles/rml-mapping> ;
+	dct:title "Ballparks"@en ;
 	a <https://pkg.semvia.io/semvia/core/document#Document> , folio:rml-mapping-schema\#RmlMapping ;
 	folio:mapping\#mappedBy folio:rml-mapping-map\#RmlMappingMap .

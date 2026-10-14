@@ -11,21 +11,31 @@ database at query time. Nothing is copied and nothing is materialized.
 
 ## Install
 
-```json
-{
-  "requires": {
-    "https://github.com/SemviaIO/lahman-baseball": "SemviaIO/lahman-baseball#v0.1.0"
-  }
-}
+Paste `https://pkg.semvia.io/semvia/lahman-baseball/@0.2.0` into Folio's dependency
+drawer, or from a workspace:
+
+```sh
+sem add https://pkg.semvia.io/semvia/lahman-baseball/@0.2.0
 ```
 
-Any git ref works in place of the tag — a branch or a commit SHA, in the
-`owner/repo#ref` form.
+Either records the requirement in `sem.json`:
+
+```json
+{
+  "requires": [
+    {
+      "@type": "https://pkg.semvia.io/semvia/core/semantic-package#PackageRequirement",
+      "package": "https://pkg.semvia.io/semvia/lahman-baseball/",
+      "versionMinimum": "0.2.0"
+    }
+  ]
+}
+```
 
 The connection descriptor names the database but carries **no password**. The
 installer binds it out of band: `svdb:password` is a secret-marked field, and the
 binding is keyed to the descriptor's own subject IRI,
-`https://github.com/SemviaIO/lahman-baseball/schema/connection#semvia-test-data`,
+`https://pkg.semvia.io/semvia/lahman-baseball/connection#semvia-test-data`,
 so the credential is released only for the destination you consented to. No
 credential appears anywhere in this repository, and none ever will.
 
@@ -80,7 +90,7 @@ Eleven classes, because baseball has entities lahman's schema does not name.
 | `bball:Ballpark` | `/park/{parkkey}` | `parks` |
 | `bball:BallparkTenure` | `/ballpark-tenure/{yearkey}-{teamkey}-{parkkey}` | `homegames` |
 
-All under this package's baseIRI, `https://github.com/SemviaIO/lahman-baseball`.
+All under this package's baseIRI, `https://pkg.semvia.io/semvia/lahman-baseball/`.
 
 Three of those templates splice a name ending in `key` rather than a raw column.
 `awardkey`, `citationkey` and `votingbodykey` are slugged copies of free text that

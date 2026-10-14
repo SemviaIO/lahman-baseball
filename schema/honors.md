@@ -45,7 +45,7 @@ writers and by a committee in the same year.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
 ::[iterator](http://w3id.org/rml/iterator) "SELECT playerid, yearid, votedby, inducted, category, trim(both '-' from regexp_replace(lower(votedby), '[^a-z0-9]+', '-', 'g')) AS votingbodykey, CAST(yearid AS integer) AS ballotyear, CAST(ballots AS integer) AS ballotscast, CAST(votes AS integer) AS votesreceived, CAST(needed AS integer) AS votesneeded FROM public.halloffame"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/hall-of-fame-ballot/{playerid}-{yearid}-{votingbodykey}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/hall-of-fame-ballot/{playerid}-{yearid}-{votingbodykey}"
 ::[class](http://w3id.org/rml/class) [HallOfFameBallot](ontology#HallOfFameBallot)
 
 ### player
@@ -124,7 +124,7 @@ hyphen.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
 ::[iterator](http://w3id.org/rml/iterator) "SELECT playerid, yearid, lgid, awardid, tie, notes, trim(both '-' from regexp_replace(lower(awardid), '[^a-z0-9]+', '-', 'g')) AS awardkey, trim(both '-' from regexp_replace(lower(coalesce(notes, '')), '[^a-z0-9]+', '-', 'g')) AS citationkey, CAST(yearid AS integer) AS seasonyear FROM public.awardsplayers"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/award-honor/{playerid}-{awardkey}-{yearid}-{lgid}-{citationkey}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/award-honor/{playerid}-{awardkey}-{yearid}-{lgid}-{citationkey}"
 ::[class](http://w3id.org/rml/class) [AwardHonor](ontology#AwardHonor)
 
 ### player

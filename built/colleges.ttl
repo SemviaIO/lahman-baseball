@@ -7,76 +7,77 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix svrl: <https://pkg.semvia.io/semvia/rml/lookup#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-:CollegeAttendances rml:logicalSource <colleges/.well-known/genid/markdown/CollegeAttendances-logicalsource> ;
-	rml:predicateObjectMap <colleges/.well-known/genid/markdown/CollegeAttendances-player> , <colleges/.well-known/genid/markdown/CollegeAttendances-school> , <colleges/.well-known/genid/markdown/CollegeAttendances-seasonyear> ;
-	rml:subjectMap <colleges/.well-known/genid/markdown/CollegeAttendances-subjectmap> ;
+:CollegeAttendances rml:logicalSource _:c14n11 ;
+	rml:predicateObjectMap _:c14n17 , _:c14n19 , _:c14n2 ;
+	rml:subjectMap _:c14n9 ;
 	a rml:TriplesMap ;
 	rdfs:comment "One bball:CollegeAttendance per row of public.collegeplaying — 17,687 rows,\ninjective on person, school and year.\nyearid is NULL on 337 rows, and a NULL spliced into a subject template is not\nmerely an odd IRI: SQL concat swallows the NULL, so the engine's row-validity\nfilter drops the whole row rather than mint an identifier from a partial tuple.\nCOALESCE to the empty string keeps those 337 attendances in the graph with an\nIRI that ends in a hyphen, and the cast copy carries the year as an integer for\nthe 17,350 rows that have one." ;
 	rdfs:label "CollegeAttendances" .
-:Schools rml:logicalSource <colleges/.well-known/genid/markdown/Schools-logicalsource> ;
-	rml:predicateObjectMap <colleges/.well-known/genid/markdown/Schools-city> , <colleges/.well-known/genid/markdown/Schools-country> , <colleges/.well-known/genid/markdown/Schools-name> , <colleges/.well-known/genid/markdown/Schools-state> ;
-	rml:subjectMap <colleges/.well-known/genid/markdown/Schools-subjectmap> ;
+:Schools rml:logicalSource _:c14n0 ;
+	rml:predicateObjectMap _:c14n14 , _:c14n15 , _:c14n18 , _:c14n10 ;
+	rml:subjectMap _:c14n13 ;
 	a rml:TriplesMap ;
 	rdfs:comment "One bball:School per row of public.schools — 1,287 rows, keyed on a school\nidentifier with no NULLs and no duplicates. A plain table source: four text\ncolumns, all of them text in the conceptual layer too." ;
 	rdfs:label "Schools" .
-<colleges/.well-known/genid/markdown/CollegeAttendances-logicalsource> rml:iterator "SELECT playerid, schoolid, COALESCE(yearid, '') AS attendancekey, CAST(yearid AS integer) AS seasonyear FROM public.collegeplaying" ;
+_:c14n11 rml:iterator "SELECT playerid, schoolid, COALESCE(yearid, '') AS attendancekey, CAST(yearid AS integer) AS seasonyear FROM public.collegeplaying" ;
 	rml:referenceFormulation rml:SQL2008Query ;
 	rml:source <connection#semvia-test-data> ;
 	a rml:LogicalSource .
-<colleges/.well-known/genid/markdown/CollegeAttendances-player-objectmap-joincondition> rml:child "playerid" ;
+_:c14n7 rml:child "playerid" ;
 	rml:parent "playerid" ;
 	a rml:Join .
-<colleges/.well-known/genid/markdown/CollegeAttendances-player-objectmap> rml:joinCondition <colleges/.well-known/genid/markdown/CollegeAttendances-player-objectmap-joincondition> ;
+_:c14n5 rml:joinCondition _:c14n7 ;
 	rml:parentTriplesMap <people#People> ;
 	a rml:RefObjectMap .
-<colleges/.well-known/genid/markdown/CollegeAttendances-player> rml:objectMap <colleges/.well-known/genid/markdown/CollegeAttendances-player-objectmap> ;
+_:c14n17 rml:objectMap _:c14n5 ;
 	rml:predicate <ontology#player> ;
 	a rml:PredicateObjectMap .
-<colleges/.well-known/genid/markdown/CollegeAttendances-school-objectmap-joincondition> rml:child "schoolid" ;
+_:c14n3 rml:child "schoolid" ;
 	rml:parent "schoolid" ;
 	a rml:Join .
-<colleges/.well-known/genid/markdown/CollegeAttendances-school-objectmap> rml:joinCondition <colleges/.well-known/genid/markdown/CollegeAttendances-school-objectmap-joincondition> ;
+_:c14n16 rml:joinCondition _:c14n3 ;
 	rml:parentTriplesMap :Schools ;
 	a rml:RefObjectMap .
-<colleges/.well-known/genid/markdown/CollegeAttendances-school> rml:objectMap <colleges/.well-known/genid/markdown/CollegeAttendances-school-objectmap> ;
+_:c14n19 rml:objectMap _:c14n16 ;
 	rml:predicate <ontology#school> ;
 	a rml:PredicateObjectMap .
-<colleges/.well-known/genid/markdown/CollegeAttendances-seasonyear-objectmap> rml:datatype xsd:integer ;
+_:c14n4 rml:datatype xsd:integer ;
 	rml:reference "seasonyear" ;
 	a rml:ObjectMap .
-<colleges/.well-known/genid/markdown/CollegeAttendances-seasonyear> rml:objectMap <colleges/.well-known/genid/markdown/CollegeAttendances-seasonyear-objectmap> ;
+_:c14n2 rml:objectMap _:c14n4 ;
 	rml:predicate <ontology#seasonYear> ;
 	a rml:PredicateObjectMap .
-<colleges/.well-known/genid/markdown/CollegeAttendances-subjectmap> rml:class <ontology#CollegeAttendance> ;
-	rml:template "https://github.com/SemviaIO/lahman-baseball/college-attendance/{playerid}-{schoolid}-{attendancekey}" ;
+_:c14n9 rml:class <ontology#CollegeAttendance> ;
+	rml:template "https://pkg.semvia.io/semvia/lahman-baseball/college-attendance/{playerid}-{schoolid}-{attendancekey}" ;
 	a rml:SubjectMap .
-<colleges/.well-known/genid/markdown/Schools-city-objectmap> rml:reference "city" ;
+_:c14n6 rml:reference "city" ;
 	a rml:ObjectMap .
-<colleges/.well-known/genid/markdown/Schools-city> rml:objectMap <colleges/.well-known/genid/markdown/Schools-city-objectmap> ;
+_:c14n14 rml:objectMap _:c14n6 ;
 	rml:predicate <ontology#city> ;
 	a rml:PredicateObjectMap .
-<colleges/.well-known/genid/markdown/Schools-country-objectmap> rml:reference "country" ;
+_:c14n8 rml:reference "country" ;
 	a rml:ObjectMap .
-<colleges/.well-known/genid/markdown/Schools-country> rml:objectMap <colleges/.well-known/genid/markdown/Schools-country-objectmap> ;
+_:c14n15 rml:objectMap _:c14n8 ;
 	rml:predicate <ontology#country> ;
 	a rml:PredicateObjectMap .
-<colleges/.well-known/genid/markdown/Schools-logicalsource> rml:iterator "public.schools" ;
+_:c14n0 rml:iterator "public.schools" ;
 	rml:referenceFormulation rml:SQL2008Table ;
 	rml:source <connection#semvia-test-data> ;
 	a rml:LogicalSource .
-<colleges/.well-known/genid/markdown/Schools-name-objectmap> rml:reference "name_full" ;
+_:c14n12 rml:reference "name_full" ;
 	a rml:ObjectMap .
-<colleges/.well-known/genid/markdown/Schools-name> rml:objectMap <colleges/.well-known/genid/markdown/Schools-name-objectmap> ;
+_:c14n18 rml:objectMap _:c14n12 ;
 	rml:predicate <ontology#name> ;
 	a rml:PredicateObjectMap .
-<colleges/.well-known/genid/markdown/Schools-state-objectmap> rml:reference "state" ;
+_:c14n1 rml:reference "state" ;
 	a rml:ObjectMap .
-<colleges/.well-known/genid/markdown/Schools-state> rml:objectMap <colleges/.well-known/genid/markdown/Schools-state-objectmap> ;
+_:c14n10 rml:objectMap _:c14n1 ;
 	rml:predicate <ontology#state> ;
 	a rml:PredicateObjectMap .
-<colleges/.well-known/genid/markdown/Schools-subjectmap> rml:class <ontology#School> ;
-	rml:template "https://github.com/SemviaIO/lahman-baseball/school/{schoolid}" ;
+_:c14n13 rml:class <ontology#School> ;
+	rml:template "https://pkg.semvia.io/semvia/lahman-baseball/school/{schoolid}" ;
 	a rml:SubjectMap .
-<> dct:title "Colleges"@en ;
+<> dct:conformsTo <https://pkg.semvia.io/semvia/rml/profiles/rml-mapping> ;
+	dct:title "Colleges"@en ;
 	a <https://pkg.semvia.io/semvia/core/document#Document> , folio:rml-mapping-schema\#RmlMapping ;
 	folio:mapping\#mappedBy folio:rml-mapping-map\#RmlMappingMap .

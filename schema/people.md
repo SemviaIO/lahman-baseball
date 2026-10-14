@@ -13,7 +13,7 @@ without further argument.
 
 > **This is the IRI other packages join to.** The concordance bridge that resolves
 > a Met baseball card to the player it depicts mints
-> `https://github.com/SemviaIO/lahman-baseball/person/{lahman_playerid}` itself
+> `https://pkg.semvia.io/semvia/lahman-baseball/person/{lahman_playerid}` itself
 > rather than minting a local IRI and relating it — `owl:sameAs` is not entailed
 > anywhere in the stack, so an alias edge would be written and never followed.
 > The template below is therefore a published contract, not an implementation
@@ -45,7 +45,7 @@ One `bball:Person` per row, subject-keyed on `playerid`.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
 ::[iterator](http://w3id.org/rml/iterator) "SELECT playerid, namefirst, namelast, bats, throws, debut, finalgame, CAST(birthyear AS integer) AS birthyear FROM public.people"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/person/{playerid}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/person/{playerid}"
 ::[class](http://w3id.org/rml/class) [Person](ontology#Person)
 
 ### givenName

@@ -1,114 +1,74 @@
 {
-  "@context": {
-    "@vocab": "https://pkg.semvia.io/sem/built-index/v1#",
-    "prov": "http://www.w3.org/ns/prov#",
-    "dcat": "http://www.w3.org/ns/dcat#",
-    "dct": "http://purl.org/dc/terms/",
-    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-    "xsd": "http://www.w3.org/2001/XMLSchema#",
-    "tool": {
-      "@id": "prov:wasGeneratedBy",
-      "@type": "@id"
-    },
-    "builtAt": {
-      "@id": "prov:generatedAtTime",
-      "@type": "xsd:dateTime"
-    },
-    "title": {
-      "@id": "dct:title"
-    },
-    "description": {
-      "@id": "dct:description"
-    },
-    "type": {
-      "@id": "rdf:type",
-      "@type": "@id"
-    },
-    "files": {
-      "@id": "dcat:distribution",
-      "@type": "@id",
-      "@container": "@set"
-    },
-    "source": {
-      "@id": "prov:wasDerivedFrom",
-      "@type": "@id"
-    },
-    "datasets": {
-      "@id": "https://pkg.semvia.io/sem/built-index/v1#datasets",
-      "@container": "@id"
-    }
-  },
-  "baseIRI": "https://github.com/SemviaIO/lahman-baseball/",
+  "@context": "https://pkg.semvia.io/semvia/core/json-schema/context/built-index.json",
+  "@type": "BuiltIndex",
+  "baseIRI": "https://pkg.semvia.io/semvia/lahman-baseball/",
   "tool": "urn:sem:build:0.1.0",
   "datasets": {
-    "https://github.com/SemviaIO/lahman-baseball/ballparks": {
+    "https://pkg.semvia.io/semvia/lahman-baseball/ballparks": {
       "files": [
         "./ballparks.ttl"
       ],
       "title": "Ballparks",
       "source": "../schema/ballparks.md",
-      "hash": "sha256-fcec4be1d5bc00d97179d87adff80fdb1e5e52125c473a05b0792d184a7a478b"
+      "hash": "sha256-e710134698a455b0f5fd4720edc43d0505cd3cba494ed13cdbbbc3d466e6ddf7"
     },
-    "https://github.com/SemviaIO/lahman-baseball/colleges": {
+    "https://pkg.semvia.io/semvia/lahman-baseball/colleges": {
       "files": [
         "./colleges.ttl"
       ],
       "title": "Colleges",
       "source": "../schema/colleges.md",
-      "hash": "sha256-1b43dd92cdcc82e53c7a36373201398bcab5296fcbd3738d7bd67496b32a4e8f"
+      "hash": "sha256-196e283aa4dfa26f4940d116df6647d6a21a41198e2a2adae62648b5452226ae"
     },
-    "https://github.com/SemviaIO/lahman-baseball/connection": {
+    "https://pkg.semvia.io/semvia/lahman-baseball/connection": {
       "files": [
         "./connection.ttl"
       ],
       "title": "Lahman Database Connection",
       "description": "The svdb:PostgresConnection descriptor this package's RML logical sources resolve their relations against. Carries host, port, database, user and SSL mode; carries no credential.",
-      "type": "https://pkg.semvia.io/semvia/core/meta-schema#Schema",
       "source": "../schema/connection.ttl",
-      "hash": "sha256-768e81d31e1c2a32ea9bd620517ecd5cf65391e250fa7e9bd00361c841b1c998"
+      "hash": "sha256-2577e8ba6325607ee7b350e671ca8eebee53cf2bf1932f7f82396a359a995b28"
     },
-    "https://github.com/SemviaIO/lahman-baseball/franchises-and-seasons": {
+    "https://pkg.semvia.io/semvia/lahman-baseball/franchises-and-seasons": {
       "files": [
         "./franchises-and-seasons.ttl"
       ],
       "title": "Franchises and Seasons",
       "source": "../schema/franchises-and-seasons.md",
-      "hash": "sha256-df13ba843791d750e19c6af04ca88dab45a73cbadd4afd64f05c9d25f9ba3587"
+      "hash": "sha256-ec7db6ab6532459365f7b42269ed2e5821853ce10655b284788f45640d190b16"
     },
-    "https://github.com/SemviaIO/lahman-baseball/honors": {
+    "https://pkg.semvia.io/semvia/lahman-baseball/honors": {
       "files": [
         "./honors.ttl"
       ],
       "title": "Honors",
       "source": "../schema/honors.md",
-      "hash": "sha256-ac36e26b7c20d5759607d367d552697e81198ad97780ce383a2c13310cc9ca55"
+      "hash": "sha256-5cd78719f2e91e786dbc261a226ce1b0955bbf15f69c3c729fcf4c615b1c5b1f"
     },
-    "https://github.com/SemviaIO/lahman-baseball/ontology": {
+    "https://pkg.semvia.io/semvia/lahman-baseball/ontology": {
       "files": [
         "./ontology.ttl"
       ],
       "title": "Lahman Baseball Ontology",
       "description": "The classes and predicates this package's RML mappings project the Lahman database's relations onto. Eleven classes — the register of people, the franchise and the team-season it splits into, the stint that batting/pitching/fielding share, and the association entities for awards, ballots, college attendance and ballpark residency.",
-      "type": "https://pkg.semvia.io/semvia/core/meta-schema#Schema",
       "source": "../schema/ontology.ttl",
-      "hash": "sha256-c18c714687330dc1f2cedbdad1a4222f01e7b680c9ff9cadf720541f16052f82"
+      "hash": "sha256-e516cdcacb653f2b7426ccfe764522afde8ea808063d22328a77d0ced8e22152"
     },
-    "https://github.com/SemviaIO/lahman-baseball/people": {
+    "https://pkg.semvia.io/semvia/lahman-baseball/people": {
       "files": [
         "./people.ttl"
       ],
       "title": "People",
       "source": "../schema/people.md",
-      "hash": "sha256-149bedb8e0d29f68b18f42971d8089244e22787237871e52785fda4e4a60ccd1"
+      "hash": "sha256-4f143f1ef14287ed370b1981e3adbbc4b2b11cb7ceaeff502eaa20aaa24ec483"
     },
-    "https://github.com/SemviaIO/lahman-baseball/stints": {
+    "https://pkg.semvia.io/semvia/lahman-baseball/stints": {
       "files": [
         "./stints.ttl"
       ],
       "title": "Stints",
       "source": "../schema/stints.md",
-      "hash": "sha256-d0573c41462dc8c9ecce14463dfcce9b9d1388f2d77086913e2e63a244247757"
+      "hash": "sha256-ced2b503db26d138f39e1042fc49188840e94ab4b966019701fa6b1152d57b91"
     }
-  },
-  "builtAt": "2026-08-29T19:02:29.704Z"
+  }
 }
