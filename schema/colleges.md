@@ -24,7 +24,7 @@ columns, all of them text in the conceptual layer too.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Table](http://w3id.org/rml/SQL2008Table)
 ::[iterator](http://w3id.org/rml/iterator) "public.schools"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/school/{schoolid}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/school/{schoolid}"
 ::[class](http://w3id.org/rml/class) [School](ontology#School)
 
 ### name
@@ -58,7 +58,7 @@ the 17,350 rows that have one.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
 ::[iterator](http://w3id.org/rml/iterator) "SELECT playerid, schoolid, COALESCE(yearid, '') AS attendancekey, CAST(yearid AS integer) AS seasonyear FROM public.collegeplaying"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/college-attendance/{playerid}-{schoolid}-{attendancekey}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/college-attendance/{playerid}-{schoolid}-{attendancekey}"
 ::[class](http://w3id.org/rml/class) [CollegeAttendance](ontology#CollegeAttendance)
 
 ### player

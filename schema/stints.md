@@ -53,7 +53,7 @@ conceptual names drop the survivor prefix along with the abbreviation.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
 ::[iterator](http://w3id.org/rml/iterator) "SELECT playerid, yearid, stint, teamid, lgid, CAST(stint AS integer) AS ordinal, CAST(g AS integer) AS games, CAST(ab AS integer) AS atbats, CAST(h AS integer) AS hits, CAST(c_2b AS integer) AS doubles, CAST(c_3b AS integer) AS triples, CAST(hr AS integer) AS homeruns, CAST(rbi AS integer) AS runsbattedin, CAST(sb AS integer) AS stolenbases, CAST(bb AS integer) AS walks, CAST(so AS integer) AS strikeouts FROM public.batting"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}"
 ::[class](http://w3id.org/rml/class) [Stint](ontology#Stint)
 
 ### player
@@ -155,7 +155,7 @@ mapped, and they do not have them yet.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
 ::[iterator](http://w3id.org/rml/iterator) "SELECT playerid, yearid, stint, teamid, lgid, CAST(w AS integer) AS wins, CAST(l AS integer) AS losses, CAST(sv AS integer) AS saves, CAST(era AS numeric) AS earnedrunaverage FROM public.pitching"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}"
 ::[class](http://w3id.org/rml/class) [Stint](ontology#Stint)
 
 ### player
@@ -224,7 +224,7 @@ at a grain the two would otherwise fight over — see the note there.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
 ::[iterator](http://w3id.org/rml/iterator) "SELECT playerid, yearid, stint, teamid, lgid, CAST(po AS integer) AS putouts, CAST(a AS integer) AS assists, CAST(e AS integer) AS errors FROM public.fielding"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}"
 ::[class](http://w3id.org/rml/class) [Stint](ontology#Stint)
 
 ### player
@@ -327,7 +327,7 @@ The `rml:SQL2008Query` source below turns the columns into rows — thirteen
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
 ::[iterator](http://w3id.org/rml/iterator) "SELECT playerid, yearid, stint, teamid, lgid, pos, gamesatposition FROM (SELECT playerid, yearid, '1' AS stint, teamid, lgid, 'P' AS pos, CAST(g_p AS integer) AS gamesatposition FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'C', CAST(g_c AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '1B', CAST(g_1b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '2B', CAST(g_2b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '3B', CAST(g_3b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'SS', CAST(g_ss AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'LF', CAST(g_lf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'CF', CAST(g_cf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'RF', CAST(g_rf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'OF', CAST(g_of AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'DH', CAST(g_dh AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'PH', CAST(g_ph AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'PR', CAST(g_pr AS integer) FROM public.appearances) pivot WHERE gamesatposition > 0"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}"
 ::[class](http://w3id.org/rml/class) [Stint](ontology#Stint)
 
 ### player

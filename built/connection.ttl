@@ -9,10 +9,10 @@
 	dct:title "Lahman Database Connection"@en ;
 	dct:description "The svdb:PostgresConnection descriptor this package's RML logical sources resolve their relations against. Carries host, port, database, user and SSL mode; carries no credential."@en ;
 	svds:imports <https://pkg.semvia.io/semvia/core/meta-schema> , <https://pkg.semvia.io/semvia/rml/connection> .
-<connection/.well-known/genid/turtle/3f1a9ee8bdcd39b9af5f1489b7ad15d7b7121b99> a sh:PrefixDeclaration ;
+_:c14n0 a sh:PrefixDeclaration ;
 	sh:prefix "conn" ;
 	sh:namespace conn: .
-<> sh:declare <connection/.well-known/genid/turtle/3f1a9ee8bdcd39b9af5f1489b7ad15d7b7121b99> .
+<> sh:declare _:c14n0 .
 conn:semvia-test-data a svdb:PostgresConnection ;
 	rdfs:label "semvia-test-data (lahman)"@en ;
 	rdfs:comment "The Lahman baseball database in the semvia-test-data Neon project — the same endpoint the gleif package names, a different database on it. `lahman` is the DATABASE name and `public` is the schema holding the 27 relations, so the mappings iterate `public.people`, `public.batting` and the rest; `lahman.people` would name nothing, and a relation reference resolving to nothing registers with an empty Arrow schema, which the federation engine refuses."@en ;

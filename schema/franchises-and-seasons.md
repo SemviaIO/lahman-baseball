@@ -34,7 +34,7 @@ in the conceptual layer too, so a plain table source is honest.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Table](http://w3id.org/rml/SQL2008Table)
 ::[iterator](http://w3id.org/rml/iterator) "public.teamsfranchises"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/franchise/{franchid}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/franchise/{franchid}"
 ::[class](http://w3id.org/rml/class) [Franchise](ontology#Franchise)
 
 ### name
@@ -64,7 +64,7 @@ none is used.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
 ::[iterator](http://w3id.org/rml/iterator) "SELECT yearid, teamid, lgid, franchid, name, wswin, CAST(yearid AS integer) AS seasonyear, CAST(w AS integer) AS wins, CAST(l AS integer) AS losses, CAST(rank AS integer) AS standingsrank FROM public.teams"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/team-season/{yearid}-{teamid}-{lgid}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/team-season/{yearid}-{teamid}-{lgid}"
 ::[class](http://w3id.org/rml/class) [TeamSeason](ontology#TeamSeason)
 
 ### seasonYear
@@ -130,7 +130,7 @@ text it splices the subject IRI, as `ordinal` it is the integer a query compares
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
 ::[iterator](http://w3id.org/rml/iterator) "SELECT playerid, yearid, teamid, lgid, inseason, CAST(inseason AS integer) AS ordinal, CAST(g AS integer) AS games, CAST(w AS integer) AS wins, CAST(l AS integer) AS losses, CAST(rank AS integer) AS standingsrank FROM public.managers"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/manager-stint/{playerid}-{yearid}-{teamid}-{inseason}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/manager-stint/{playerid}-{yearid}-{teamid}-{inseason}"
 ::[class](http://w3id.org/rml/class) [ManagerStint](ontology#ManagerStint)
 
 ### player

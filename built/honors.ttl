@@ -7,115 +7,116 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix svrl: <https://pkg.semvia.io/semvia/rml/lookup#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-:AwardHonors rml:logicalSource <honors/.well-known/genid/markdown/AwardHonors-logicalsource> ;
-	rml:predicateObjectMap <honors/.well-known/genid/markdown/AwardHonors-award> , <honors/.well-known/genid/markdown/AwardHonors-citation> , <honors/.well-known/genid/markdown/AwardHonors-league> , <honors/.well-known/genid/markdown/AwardHonors-player> , <honors/.well-known/genid/markdown/AwardHonors-seasonyear> , <honors/.well-known/genid/markdown/AwardHonors-sharedhonor> ;
-	rml:subjectMap <honors/.well-known/genid/markdown/AwardHonors-subjectmap> ;
+:AwardHonors rml:logicalSource _:c14n4 ;
+	rml:predicateObjectMap _:c14n28 , _:c14n27 , _:c14n1 , _:c14n20 , _:c14n25 , _:c14n12 ;
+	rml:subjectMap _:c14n18 ;
 	a rml:TriplesMap ;
 	rdfs:comment "One bball:AwardHonor per row of public.awardsplayers — 12,667 rows.\nThe citation is part of the key, not a decoration on it: 492 groups of rows share\nperson, award, year and league exactly, separated only by the free-text note — a\nPlayer of the Week won twice in one summer. A subject template that omitted it\nwould fuse those conferrals into one resource and lose the count.\nThe note is also NULL on 12,008 rows, and a NULL spliced into a template is fatal\nrather than merely awkward: the engine's row-validity filter drops the whole row,\nbecause SQL concat swallows a NULL and would otherwise mint an IRI from a\npartial tuple. COALESCE to the empty string inside the slug expression is what\nkeeps those 12,008 conferrals in the graph; their IRIs simply end in a trailing\nhyphen." ;
 	rdfs:label "AwardHonors" .
-:HallOfFameBallots rml:logicalSource <honors/.well-known/genid/markdown/HallOfFameBallots-logicalsource> ;
-	rml:predicateObjectMap <honors/.well-known/genid/markdown/HallOfFameBallots-ballotscast> , <honors/.well-known/genid/markdown/HallOfFameBallots-ballotyear> , <honors/.well-known/genid/markdown/HallOfFameBallots-inducted> , <honors/.well-known/genid/markdown/HallOfFameBallots-inducteecategory> , <honors/.well-known/genid/markdown/HallOfFameBallots-player> , <honors/.well-known/genid/markdown/HallOfFameBallots-votesneeded> , <honors/.well-known/genid/markdown/HallOfFameBallots-votesreceived> , <honors/.well-known/genid/markdown/HallOfFameBallots-votingbody> ;
-	rml:subjectMap <honors/.well-known/genid/markdown/HallOfFameBallots-subjectmap> ;
+:HallOfFameBallots rml:logicalSource _:c14n3 ;
+	rml:predicateObjectMap _:c14n10 , _:c14n17 , _:c14n21 , _:c14n19 , _:c14n0 , _:c14n15 , _:c14n2 , _:c14n23 ;
+	rml:subjectMap _:c14n6 ;
 	a rml:TriplesMap ;
 	rdfs:comment "One bball:HallOfFameBallot per row of public.halloffame — 6,426 rows.\nNote the key: person, year, and voting body. Person and year alone are not\nenough — 146 rows share a (playerid, yearid) pair, a player considered by the\nwriters and by a committee in the same year." ;
 	rdfs:label "HallOfFameBallots" .
-<honors/.well-known/genid/markdown/AwardHonors-award-objectmap> rml:reference "awardid" ;
+_:c14n8 rml:reference "awardid" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-award> rml:objectMap <honors/.well-known/genid/markdown/AwardHonors-award-objectmap> ;
+_:c14n28 rml:objectMap _:c14n8 ;
 	rml:predicate <ontology#award> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-citation-objectmap> rml:reference "notes" ;
+_:c14n7 rml:reference "notes" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-citation> rml:objectMap <honors/.well-known/genid/markdown/AwardHonors-citation-objectmap> ;
+_:c14n27 rml:objectMap _:c14n7 ;
 	rml:predicate <ontology#citation> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-league-objectmap> rml:reference "lgid" ;
+_:c14n11 rml:reference "lgid" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-league> rml:objectMap <honors/.well-known/genid/markdown/AwardHonors-league-objectmap> ;
+_:c14n1 rml:objectMap _:c14n11 ;
 	rml:predicate <ontology#league> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-logicalsource> rml:iterator "SELECT playerid, yearid, lgid, awardid, tie, notes, trim(both '-' from regexp_replace(lower(awardid), '[^a-z0-9]+', '-', 'g')) AS awardkey, trim(both '-' from regexp_replace(lower(coalesce(notes, '')), '[^a-z0-9]+', '-', 'g')) AS citationkey, CAST(yearid AS integer) AS seasonyear FROM public.awardsplayers" ;
+_:c14n4 rml:iterator "SELECT playerid, yearid, lgid, awardid, tie, notes, trim(both '-' from regexp_replace(lower(awardid), '[^a-z0-9]+', '-', 'g')) AS awardkey, trim(both '-' from regexp_replace(lower(coalesce(notes, '')), '[^a-z0-9]+', '-', 'g')) AS citationkey, CAST(yearid AS integer) AS seasonyear FROM public.awardsplayers" ;
 	rml:referenceFormulation rml:SQL2008Query ;
 	rml:source <connection#semvia-test-data> ;
 	a rml:LogicalSource .
-<honors/.well-known/genid/markdown/AwardHonors-player-objectmap-joincondition> rml:child "playerid" ;
+_:c14n33 rml:child "playerid" ;
 	rml:parent "playerid" ;
 	a rml:Join .
-<honors/.well-known/genid/markdown/AwardHonors-player-objectmap> rml:joinCondition <honors/.well-known/genid/markdown/AwardHonors-player-objectmap-joincondition> ;
+_:c14n32 rml:joinCondition _:c14n33 ;
 	rml:parentTriplesMap <people#People> ;
 	a rml:RefObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-player> rml:objectMap <honors/.well-known/genid/markdown/AwardHonors-player-objectmap> ;
+_:c14n20 rml:objectMap _:c14n32 ;
 	rml:predicate <ontology#player> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-seasonyear-objectmap> rml:datatype xsd:integer ;
+_:c14n5 rml:datatype xsd:integer ;
 	rml:reference "seasonyear" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-seasonyear> rml:objectMap <honors/.well-known/genid/markdown/AwardHonors-seasonyear-objectmap> ;
+_:c14n25 rml:objectMap _:c14n5 ;
 	rml:predicate <ontology#seasonYear> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-sharedhonor-objectmap> rml:reference "tie" ;
+_:c14n9 rml:reference "tie" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-sharedhonor> rml:objectMap <honors/.well-known/genid/markdown/AwardHonors-sharedhonor-objectmap> ;
+_:c14n12 rml:objectMap _:c14n9 ;
 	rml:predicate <ontology#sharedHonor> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/AwardHonors-subjectmap> rml:class <ontology#AwardHonor> ;
-	rml:template "https://github.com/SemviaIO/lahman-baseball/award-honor/{playerid}-{awardkey}-{yearid}-{lgid}-{citationkey}" ;
+_:c14n18 rml:class <ontology#AwardHonor> ;
+	rml:template "https://pkg.semvia.io/semvia/lahman-baseball/award-honor/{playerid}-{awardkey}-{yearid}-{lgid}-{citationkey}" ;
 	a rml:SubjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-ballotscast-objectmap> rml:datatype xsd:integer ;
+_:c14n26 rml:datatype xsd:integer ;
 	rml:reference "ballotscast" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-ballotscast> rml:objectMap <honors/.well-known/genid/markdown/HallOfFameBallots-ballotscast-objectmap> ;
+_:c14n10 rml:objectMap _:c14n26 ;
 	rml:predicate <ontology#ballotsCast> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-ballotyear-objectmap> rml:datatype xsd:integer ;
+_:c14n14 rml:datatype xsd:integer ;
 	rml:reference "ballotyear" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-ballotyear> rml:objectMap <honors/.well-known/genid/markdown/HallOfFameBallots-ballotyear-objectmap> ;
+_:c14n17 rml:objectMap _:c14n14 ;
 	rml:predicate <ontology#ballotYear> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-inducted-objectmap> rml:reference "inducted" ;
+_:c14n22 rml:reference "inducted" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-inducted> rml:objectMap <honors/.well-known/genid/markdown/HallOfFameBallots-inducted-objectmap> ;
+_:c14n21 rml:objectMap _:c14n22 ;
 	rml:predicate <ontology#inducted> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-inducteecategory-objectmap> rml:reference "category" ;
+_:c14n16 rml:reference "category" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-inducteecategory> rml:objectMap <honors/.well-known/genid/markdown/HallOfFameBallots-inducteecategory-objectmap> ;
+_:c14n19 rml:objectMap _:c14n16 ;
 	rml:predicate <ontology#inducteeCategory> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-logicalsource> rml:iterator "SELECT playerid, yearid, votedby, inducted, category, trim(both '-' from regexp_replace(lower(votedby), '[^a-z0-9]+', '-', 'g')) AS votingbodykey, CAST(yearid AS integer) AS ballotyear, CAST(ballots AS integer) AS ballotscast, CAST(votes AS integer) AS votesreceived, CAST(needed AS integer) AS votesneeded FROM public.halloffame" ;
+_:c14n3 rml:iterator "SELECT playerid, yearid, votedby, inducted, category, trim(both '-' from regexp_replace(lower(votedby), '[^a-z0-9]+', '-', 'g')) AS votingbodykey, CAST(yearid AS integer) AS ballotyear, CAST(ballots AS integer) AS ballotscast, CAST(votes AS integer) AS votesreceived, CAST(needed AS integer) AS votesneeded FROM public.halloffame" ;
 	rml:referenceFormulation rml:SQL2008Query ;
 	rml:source <connection#semvia-test-data> ;
 	a rml:LogicalSource .
-<honors/.well-known/genid/markdown/HallOfFameBallots-player-objectmap-joincondition> rml:child "playerid" ;
+_:c14n31 rml:child "playerid" ;
 	rml:parent "playerid" ;
 	a rml:Join .
-<honors/.well-known/genid/markdown/HallOfFameBallots-player-objectmap> rml:joinCondition <honors/.well-known/genid/markdown/HallOfFameBallots-player-objectmap-joincondition> ;
+_:c14n30 rml:joinCondition _:c14n31 ;
 	rml:parentTriplesMap <people#People> ;
 	a rml:RefObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-player> rml:objectMap <honors/.well-known/genid/markdown/HallOfFameBallots-player-objectmap> ;
+_:c14n0 rml:objectMap _:c14n30 ;
 	rml:predicate <ontology#player> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-subjectmap> rml:class <ontology#HallOfFameBallot> ;
-	rml:template "https://github.com/SemviaIO/lahman-baseball/hall-of-fame-ballot/{playerid}-{yearid}-{votingbodykey}" ;
+_:c14n6 rml:class <ontology#HallOfFameBallot> ;
+	rml:template "https://pkg.semvia.io/semvia/lahman-baseball/hall-of-fame-ballot/{playerid}-{yearid}-{votingbodykey}" ;
 	a rml:SubjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-votesneeded-objectmap> rml:datatype xsd:integer ;
+_:c14n24 rml:datatype xsd:integer ;
 	rml:reference "votesneeded" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-votesneeded> rml:objectMap <honors/.well-known/genid/markdown/HallOfFameBallots-votesneeded-objectmap> ;
+_:c14n15 rml:objectMap _:c14n24 ;
 	rml:predicate <ontology#votesNeeded> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-votesreceived-objectmap> rml:datatype xsd:integer ;
+_:c14n29 rml:datatype xsd:integer ;
 	rml:reference "votesreceived" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-votesreceived> rml:objectMap <honors/.well-known/genid/markdown/HallOfFameBallots-votesreceived-objectmap> ;
+_:c14n2 rml:objectMap _:c14n29 ;
 	rml:predicate <ontology#votesReceived> ;
 	a rml:PredicateObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-votingbody-objectmap> rml:reference "votedby" ;
+_:c14n13 rml:reference "votedby" ;
 	a rml:ObjectMap .
-<honors/.well-known/genid/markdown/HallOfFameBallots-votingbody> rml:objectMap <honors/.well-known/genid/markdown/HallOfFameBallots-votingbody-objectmap> ;
+_:c14n23 rml:objectMap _:c14n13 ;
 	rml:predicate <ontology#votingBody> ;
 	a rml:PredicateObjectMap .
-<> dct:title "Honors"@en ;
+<> dct:conformsTo <https://pkg.semvia.io/semvia/rml/profiles/rml-mapping> ;
+	dct:title "Honors"@en ;
 	a <https://pkg.semvia.io/semvia/core/document#Document> , folio:rml-mapping-schema\#RmlMapping ;
 	folio:mapping\#mappedBy folio:rml-mapping-map\#RmlMappingMap .

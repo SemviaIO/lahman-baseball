@@ -7,57 +7,58 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix svrl: <https://pkg.semvia.io/semvia/rml/lookup#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-:People rml:logicalSource <people/.well-known/genid/markdown/People-logicalsource> ;
-	rml:predicateObjectMap <people/.well-known/genid/markdown/People-battinghand> , <people/.well-known/genid/markdown/People-birthyear> , <people/.well-known/genid/markdown/People-debutdate> , <people/.well-known/genid/markdown/People-familyname> , <people/.well-known/genid/markdown/People-finalgamedate> , <people/.well-known/genid/markdown/People-givenname> , <people/.well-known/genid/markdown/People-throwinghand> ;
-	rml:subjectMap <people/.well-known/genid/markdown/People-subjectmap> ;
+:People rml:logicalSource _:c14n9 ;
+	rml:predicateObjectMap _:c14n4 , _:c14n0 , _:c14n11 , _:c14n12 , _:c14n10 , _:c14n3 , _:c14n1 ;
+	rml:subjectMap _:c14n13 ;
 	a rml:TriplesMap ;
 	rdfs:comment "One bball:Person per row, subject-keyed on playerid." ;
 	rdfs:label "People" .
-<people/.well-known/genid/markdown/People-battinghand-objectmap> rml:reference "bats" ;
+_:c14n7 rml:reference "bats" ;
 	a rml:ObjectMap .
-<people/.well-known/genid/markdown/People-battinghand> rml:objectMap <people/.well-known/genid/markdown/People-battinghand-objectmap> ;
+_:c14n4 rml:objectMap _:c14n7 ;
 	rml:predicate <ontology#battingHand> ;
 	a rml:PredicateObjectMap .
-<people/.well-known/genid/markdown/People-birthyear-objectmap> rml:datatype xsd:integer ;
+_:c14n8 rml:datatype xsd:integer ;
 	rml:reference "birthyear" ;
 	a rml:ObjectMap .
-<people/.well-known/genid/markdown/People-birthyear> rml:objectMap <people/.well-known/genid/markdown/People-birthyear-objectmap> ;
+_:c14n0 rml:objectMap _:c14n8 ;
 	rml:predicate <ontology#birthYear> ;
 	a rml:PredicateObjectMap .
-<people/.well-known/genid/markdown/People-debutdate-objectmap> rml:datatype xsd:date ;
+_:c14n2 rml:datatype xsd:date ;
 	rml:reference "debut" ;
 	a rml:ObjectMap .
-<people/.well-known/genid/markdown/People-debutdate> rml:objectMap <people/.well-known/genid/markdown/People-debutdate-objectmap> ;
+_:c14n11 rml:objectMap _:c14n2 ;
 	rml:predicate <ontology#debutDate> ;
 	a rml:PredicateObjectMap .
-<people/.well-known/genid/markdown/People-familyname-objectmap> rml:reference "namelast" ;
+_:c14n5 rml:reference "namelast" ;
 	a rml:ObjectMap .
-<people/.well-known/genid/markdown/People-familyname> rml:objectMap <people/.well-known/genid/markdown/People-familyname-objectmap> ;
+_:c14n12 rml:objectMap _:c14n5 ;
 	rml:predicate <ontology#familyName> ;
 	a rml:PredicateObjectMap .
-<people/.well-known/genid/markdown/People-finalgamedate-objectmap> rml:datatype xsd:date ;
+_:c14n14 rml:datatype xsd:date ;
 	rml:reference "finalgame" ;
 	a rml:ObjectMap .
-<people/.well-known/genid/markdown/People-finalgamedate> rml:objectMap <people/.well-known/genid/markdown/People-finalgamedate-objectmap> ;
+_:c14n10 rml:objectMap _:c14n14 ;
 	rml:predicate <ontology#finalGameDate> ;
 	a rml:PredicateObjectMap .
-<people/.well-known/genid/markdown/People-givenname-objectmap> rml:reference "namefirst" ;
+_:c14n6 rml:reference "namefirst" ;
 	a rml:ObjectMap .
-<people/.well-known/genid/markdown/People-givenname> rml:objectMap <people/.well-known/genid/markdown/People-givenname-objectmap> ;
+_:c14n3 rml:objectMap _:c14n6 ;
 	rml:predicate <ontology#givenName> ;
 	a rml:PredicateObjectMap .
-<people/.well-known/genid/markdown/People-logicalsource> rml:iterator "SELECT playerid, namefirst, namelast, bats, throws, debut, finalgame, CAST(birthyear AS integer) AS birthyear FROM public.people" ;
+_:c14n9 rml:iterator "SELECT playerid, namefirst, namelast, bats, throws, debut, finalgame, CAST(birthyear AS integer) AS birthyear FROM public.people" ;
 	rml:referenceFormulation rml:SQL2008Query ;
 	rml:source <connection#semvia-test-data> ;
 	a rml:LogicalSource .
-<people/.well-known/genid/markdown/People-subjectmap> rml:class <ontology#Person> ;
-	rml:template "https://github.com/SemviaIO/lahman-baseball/person/{playerid}" ;
+_:c14n13 rml:class <ontology#Person> ;
+	rml:template "https://pkg.semvia.io/semvia/lahman-baseball/person/{playerid}" ;
 	a rml:SubjectMap .
-<people/.well-known/genid/markdown/People-throwinghand-objectmap> rml:reference "throws" ;
+_:c14n15 rml:reference "throws" ;
 	a rml:ObjectMap .
-<people/.well-known/genid/markdown/People-throwinghand> rml:objectMap <people/.well-known/genid/markdown/People-throwinghand-objectmap> ;
+_:c14n1 rml:objectMap _:c14n15 ;
 	rml:predicate <ontology#throwingHand> ;
 	a rml:PredicateObjectMap .
-<> dct:title "People"@en ;
+<> dct:conformsTo <https://pkg.semvia.io/semvia/rml/profiles/rml-mapping> ;
+	dct:title "People"@en ;
 	a <https://pkg.semvia.io/semvia/core/document#Document> , folio:rml-mapping-schema\#RmlMapping ;
 	folio:mapping\#mappedBy folio:rml-mapping-map\#RmlMappingMap .

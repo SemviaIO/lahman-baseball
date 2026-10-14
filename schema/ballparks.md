@@ -23,7 +23,7 @@ splitting before it could be more than a string.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Table](http://w3id.org/rml/SQL2008Table)
 ::[iterator](http://w3id.org/rml/iterator) "public.parks"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/park/{parkkey}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/park/{parkkey}"
 ::[class](http://w3id.org/rml/class) [Ballpark](ontology#Ballpark)
 
 ### name
@@ -57,7 +57,7 @@ once and every query afterwards sees one edge.
 ::[source](http://w3id.org/rml/source) [semvia-test-data](connection#semvia-test-data)
 ::[referenceFormulation](http://w3id.org/rml/referenceFormulation) [SQL2008Query](http://w3id.org/rml/SQL2008Query)
 ::[iterator](http://w3id.org/rml/iterator) "SELECT yearkey, teamkey, leaguekey, parkkey, spanfirst, spanlast, CAST(yearkey AS integer) AS seasonyear, CAST(games AS integer) AS gameshosted, CAST(attendance AS integer) AS seasonattendance FROM public.homegames"
-::[template](http://w3id.org/rml/template) "https://github.com/SemviaIO/lahman-baseball/ballpark-tenure/{yearkey}-{teamkey}-{parkkey}"
+::[template](http://w3id.org/rml/template) "https://pkg.semvia.io/semvia/lahman-baseball/ballpark-tenure/{yearkey}-{teamkey}-{parkkey}"
 ::[class](http://w3id.org/rml/class) [BallparkTenure](ontology#BallparkTenure)
 
 ### ballpark

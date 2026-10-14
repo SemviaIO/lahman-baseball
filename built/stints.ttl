@@ -7,273 +7,274 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix svrl: <https://pkg.semvia.io/semvia/rml/lookup#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-:BattingStints rml:logicalSource <stints/.well-known/genid/markdown/BattingStints-logicalsource> ;
-	rml:predicateObjectMap <stints/.well-known/genid/markdown/BattingStints-atbats> , <stints/.well-known/genid/markdown/BattingStints-doubles> , <stints/.well-known/genid/markdown/BattingStints-games> , <stints/.well-known/genid/markdown/BattingStints-hits> , <stints/.well-known/genid/markdown/BattingStints-homeruns> , <stints/.well-known/genid/markdown/BattingStints-player> , <stints/.well-known/genid/markdown/BattingStints-runsbattedin> , <stints/.well-known/genid/markdown/BattingStints-stintordinal> , <stints/.well-known/genid/markdown/BattingStints-stolenbases> , <stints/.well-known/genid/markdown/BattingStints-strikeouts> , <stints/.well-known/genid/markdown/BattingStints-teamseason> , <stints/.well-known/genid/markdown/BattingStints-triples> , <stints/.well-known/genid/markdown/BattingStints-walks> ;
-	rml:subjectMap <stints/.well-known/genid/markdown/BattingStints-subjectmap> ;
+:BattingStints rml:logicalSource _:c14n19 ;
+	rml:predicateObjectMap _:c14n3 , _:c14n2 , _:c14n53 , _:c14n55 , _:c14n23 , _:c14n38 , _:c14n36 , _:c14n18 , _:c14n45 , _:c14n1 , _:c14n20 , _:c14n26 , _:c14n12 ;
+	rml:subjectMap _:c14n41 ;
 	a rml:TriplesMap ;
 	rdfs:comment "One bball:Stint per row of public.batting — 128,598 rows, injective on the\nfour-column subject template.\nstint is spliced raw into the subject and cast to ordinal for querying; the\ntemplate needs the text and a comparison needs the integer, and one column cannot\nbe both. c_2b and c_3b are the register's spelling of doubles and triples,\nprefixed because a CSV header cannot start an identifier with a digit — the\nconceptual names drop the survivor prefix along with the abbreviation." ;
 	rdfs:label "BattingStints" .
-:FieldingStints rml:logicalSource <stints/.well-known/genid/markdown/FieldingStints-logicalsource> ;
-	rml:predicateObjectMap <stints/.well-known/genid/markdown/FieldingStints-assists> , <stints/.well-known/genid/markdown/FieldingStints-errors> , <stints/.well-known/genid/markdown/FieldingStints-player> , <stints/.well-known/genid/markdown/FieldingStints-putouts> , <stints/.well-known/genid/markdown/FieldingStints-teamseason> ;
-	rml:subjectMap <stints/.well-known/genid/markdown/FieldingStints-subjectmap> ;
+:FieldingStints rml:logicalSource _:c14n43 ;
+	rml:predicateObjectMap _:c14n6 , _:c14n35 , _:c14n48 , _:c14n21 , _:c14n49 ;
+	rml:subjectMap _:c14n28 ;
 	a rml:TriplesMap ;
 	rdfs:comment "One bball:Stint per row of public.fielding — but 174,332 rows over 127,079\ndistinct stints, because the register records a separate row per position\nplayed. The subject template does not splice pos, so a stint spent at two\npositions carries two putout counts, two assist counts and two error counts on\none resource.\nThat is the honest projection of a source whose grain is finer than the entity's,\nand the bball:Stint shape declines to cap those paths at 1 for exactly that\nreason: a cap would report the register as invalid when what is actually true is\nthat the model is one level coarser than the table. A query that wants per-\nposition fielding numbers needs a resource per position, which this package does\nnot mint; a query that wants a stint's total needs SUM, not a lookup.\nThis map does not emit bball:position. The appearances pivot below does,\nat a grain the two would otherwise fight over — see the note there." ;
 	rdfs:label "FieldingStints" .
-:PitchingStints rml:logicalSource <stints/.well-known/genid/markdown/PitchingStints-logicalsource> ;
-	rml:predicateObjectMap <stints/.well-known/genid/markdown/PitchingStints-earnedrunaverage> , <stints/.well-known/genid/markdown/PitchingStints-losses> , <stints/.well-known/genid/markdown/PitchingStints-player> , <stints/.well-known/genid/markdown/PitchingStints-saves> , <stints/.well-known/genid/markdown/PitchingStints-teamseason> , <stints/.well-known/genid/markdown/PitchingStints-wins> ;
-	rml:subjectMap <stints/.well-known/genid/markdown/PitchingStints-subjectmap> ;
+:PitchingStints rml:logicalSource _:c14n24 ;
+	rml:predicateObjectMap _:c14n31 , _:c14n50 , _:c14n14 , _:c14n30 , _:c14n51 , _:c14n5 ;
+	rml:subjectMap _:c14n22 ;
 	a rml:TriplesMap ;
 	rdfs:comment "One bball:Stint per row of public.pitching — 57,630 rows, minting the same\nsubject as the batting stint it always shares a key with.\nFour predicates only, all of them unambiguous on a stint: no batting line carries\nwins, losses, saves or an earned run average. Hits allowed, innings pitched and\nthe rest of the pitching line need predicates of their own before they can be\nmapped, and they do not have them yet." ;
 	rdfs:label "PitchingStints" .
-:PositionAppearances rml:logicalSource <stints/.well-known/genid/markdown/PositionAppearances-logicalsource> ;
-	rml:predicateObjectMap <stints/.well-known/genid/markdown/PositionAppearances-gamesatposition> , <stints/.well-known/genid/markdown/PositionAppearances-player> , <stints/.well-known/genid/markdown/PositionAppearances-position> , <stints/.well-known/genid/markdown/PositionAppearances-teamseason> ;
-	rml:subjectMap <stints/.well-known/genid/markdown/PositionAppearances-subjectmap> ;
+:PositionAppearances rml:logicalSource _:c14n32 ;
+	rml:predicateObjectMap _:c14n47 , _:c14n16 , _:c14n13 , _:c14n34 ;
+	rml:subjectMap _:c14n46 ;
 	a rml:TriplesMap ;
 	rdfs:comment "The unflatten. public.appearances is one row per player-season-team with\nthirteen position columns side by side — g_p, g_c, g_1b, g_2b,\ng_3b, g_ss, g_lf, g_cf, g_rf, g_of, g_dh, g_ph, g_pr — a\nspreadsheet shape, not a relational one. RDF has no column position, so the\npredicate would have to be bball:gamesAtShortstop, bball:gamesAtCatcher and\neleven more: thirteen predicates encoding one dimension, and a query asking \"what\nposition did they play\" unable to be written without naming all thirteen.\nThe rml:SQL2008Query source below turns the columns into rows — thirteen\nUNION ALL branches, one per position, each lifting the position code into a\npos value and the count into gamesatposition. One predicate pair comes out:\nbball:position and bball:gamesAtPosition, paired one-to-one per row." ;
 	rdfs:label "PositionAppearances" .
-<stints/.well-known/genid/markdown/BattingStints-atbats-objectmap> rml:datatype xsd:integer ;
+_:c14n39 rml:datatype xsd:integer ;
 	rml:reference "atbats" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-atbats> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-atbats-objectmap> ;
+_:c14n3 rml:objectMap _:c14n39 ;
 	rml:predicate <ontology#atBats> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-doubles-objectmap> rml:datatype xsd:integer ;
+_:c14n40 rml:datatype xsd:integer ;
 	rml:reference "doubles" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-doubles> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-doubles-objectmap> ;
+_:c14n2 rml:objectMap _:c14n40 ;
 	rml:predicate <ontology#doubles> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-games-objectmap> rml:datatype xsd:integer ;
+_:c14n44 rml:datatype xsd:integer ;
 	rml:reference "games" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-games> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-games-objectmap> ;
+_:c14n53 rml:objectMap _:c14n44 ;
 	rml:predicate <ontology#games> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-hits-objectmap> rml:datatype xsd:integer ;
+_:c14n17 rml:datatype xsd:integer ;
 	rml:reference "hits" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-hits> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-hits-objectmap> ;
+_:c14n55 rml:objectMap _:c14n17 ;
 	rml:predicate <ontology#hits> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-homeruns-objectmap> rml:datatype xsd:integer ;
+_:c14n9 rml:datatype xsd:integer ;
 	rml:reference "homeruns" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-homeruns> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-homeruns-objectmap> ;
+_:c14n23 rml:objectMap _:c14n9 ;
 	rml:predicate <ontology#homeRuns> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-logicalsource> rml:iterator "SELECT playerid, yearid, stint, teamid, lgid, CAST(stint AS integer) AS ordinal, CAST(g AS integer) AS games, CAST(ab AS integer) AS atbats, CAST(h AS integer) AS hits, CAST(c_2b AS integer) AS doubles, CAST(c_3b AS integer) AS triples, CAST(hr AS integer) AS homeruns, CAST(rbi AS integer) AS runsbattedin, CAST(sb AS integer) AS stolenbases, CAST(bb AS integer) AS walks, CAST(so AS integer) AS strikeouts FROM public.batting" ;
+_:c14n19 rml:iterator "SELECT playerid, yearid, stint, teamid, lgid, CAST(stint AS integer) AS ordinal, CAST(g AS integer) AS games, CAST(ab AS integer) AS atbats, CAST(h AS integer) AS hits, CAST(c_2b AS integer) AS doubles, CAST(c_3b AS integer) AS triples, CAST(hr AS integer) AS homeruns, CAST(rbi AS integer) AS runsbattedin, CAST(sb AS integer) AS stolenbases, CAST(bb AS integer) AS walks, CAST(so AS integer) AS strikeouts FROM public.batting" ;
 	rml:referenceFormulation rml:SQL2008Query ;
 	rml:source <connection#semvia-test-data> ;
 	a rml:LogicalSource .
-<stints/.well-known/genid/markdown/BattingStints-player-objectmap-joincondition> rml:child "playerid" ;
+_:c14n79 rml:child "playerid" ;
 	rml:parent "playerid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/BattingStints-player-objectmap> rml:joinCondition <stints/.well-known/genid/markdown/BattingStints-player-objectmap-joincondition> ;
+_:c14n78 rml:joinCondition _:c14n79 ;
 	rml:parentTriplesMap <people#People> ;
 	a rml:RefObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-player> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-player-objectmap> ;
+_:c14n38 rml:objectMap _:c14n78 ;
 	rml:predicate <ontology#player> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-runsbattedin-objectmap> rml:datatype xsd:integer ;
+_:c14n7 rml:datatype xsd:integer ;
 	rml:reference "runsbattedin" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-runsbattedin> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-runsbattedin-objectmap> ;
+_:c14n36 rml:objectMap _:c14n7 ;
 	rml:predicate <ontology#runsBattedIn> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-stintordinal-objectmap> rml:datatype xsd:integer ;
+_:c14n29 rml:datatype xsd:integer ;
 	rml:reference "ordinal" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-stintordinal> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-stintordinal-objectmap> ;
+_:c14n18 rml:objectMap _:c14n29 ;
 	rml:predicate <ontology#stintOrdinal> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-stolenbases-objectmap> rml:datatype xsd:integer ;
+_:c14n54 rml:datatype xsd:integer ;
 	rml:reference "stolenbases" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-stolenbases> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-stolenbases-objectmap> ;
+_:c14n45 rml:objectMap _:c14n54 ;
 	rml:predicate <ontology#stolenBases> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-strikeouts-objectmap> rml:datatype xsd:integer ;
+_:c14n8 rml:datatype xsd:integer ;
 	rml:reference "strikeouts" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-strikeouts> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-strikeouts-objectmap> ;
+_:c14n1 rml:objectMap _:c14n8 ;
 	rml:predicate <ontology#strikeouts> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-subjectmap> rml:class <ontology#Stint> ;
-	rml:template "https://github.com/SemviaIO/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}" ;
+_:c14n41 rml:class <ontology#Stint> ;
+	rml:template "https://pkg.semvia.io/semvia/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}" ;
 	a rml:SubjectMap .
-<stints/.well-known/genid/markdown/BattingStints-teamseason-objectmap-joincondition> rml:child "teamid" ;
+_:c14n56 rml:child "teamid" ;
 	rml:parent "teamid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/BattingStints-teamseason-objectmap-joincondition~1> rml:child "yearid" ;
+_:c14n58 rml:child "yearid" ;
 	rml:parent "yearid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/BattingStints-teamseason-objectmap-joincondition~2> rml:child "lgid" ;
+_:c14n59 rml:child "lgid" ;
 	rml:parent "lgid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/BattingStints-teamseason-objectmap> rml:joinCondition <stints/.well-known/genid/markdown/BattingStints-teamseason-objectmap-joincondition> , <stints/.well-known/genid/markdown/BattingStints-teamseason-objectmap-joincondition~1> , <stints/.well-known/genid/markdown/BattingStints-teamseason-objectmap-joincondition~2> ;
+_:c14n57 rml:joinCondition _:c14n56 , _:c14n58 , _:c14n59 ;
 	rml:parentTriplesMap <franchises-and-seasons#TeamSeasons> ;
 	a rml:RefObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-teamseason> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-teamseason-objectmap> ;
+_:c14n20 rml:objectMap _:c14n57 ;
 	rml:predicate <ontology#teamSeason> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-triples-objectmap> rml:datatype xsd:integer ;
+_:c14n27 rml:datatype xsd:integer ;
 	rml:reference "triples" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-triples> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-triples-objectmap> ;
+_:c14n26 rml:objectMap _:c14n27 ;
 	rml:predicate <ontology#triples> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-walks-objectmap> rml:datatype xsd:integer ;
+_:c14n42 rml:datatype xsd:integer ;
 	rml:reference "walks" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/BattingStints-walks> rml:objectMap <stints/.well-known/genid/markdown/BattingStints-walks-objectmap> ;
+_:c14n12 rml:objectMap _:c14n42 ;
 	rml:predicate <ontology#walks> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/FieldingStints-assists-objectmap> rml:datatype xsd:integer ;
+_:c14n37 rml:datatype xsd:integer ;
 	rml:reference "assists" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/FieldingStints-assists> rml:objectMap <stints/.well-known/genid/markdown/FieldingStints-assists-objectmap> ;
+_:c14n6 rml:objectMap _:c14n37 ;
 	rml:predicate <ontology#assists> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/FieldingStints-errors-objectmap> rml:datatype xsd:integer ;
+_:c14n0 rml:datatype xsd:integer ;
 	rml:reference "errors" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/FieldingStints-errors> rml:objectMap <stints/.well-known/genid/markdown/FieldingStints-errors-objectmap> ;
+_:c14n35 rml:objectMap _:c14n0 ;
 	rml:predicate <ontology#errors> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/FieldingStints-logicalsource> rml:iterator "SELECT playerid, yearid, stint, teamid, lgid, CAST(po AS integer) AS putouts, CAST(a AS integer) AS assists, CAST(e AS integer) AS errors FROM public.fielding" ;
+_:c14n43 rml:iterator "SELECT playerid, yearid, stint, teamid, lgid, CAST(po AS integer) AS putouts, CAST(a AS integer) AS assists, CAST(e AS integer) AS errors FROM public.fielding" ;
 	rml:referenceFormulation rml:SQL2008Query ;
 	rml:source <connection#semvia-test-data> ;
 	a rml:LogicalSource .
-<stints/.well-known/genid/markdown/FieldingStints-player-objectmap-joincondition> rml:child "playerid" ;
+_:c14n75 rml:child "playerid" ;
 	rml:parent "playerid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/FieldingStints-player-objectmap> rml:joinCondition <stints/.well-known/genid/markdown/FieldingStints-player-objectmap-joincondition> ;
+_:c14n74 rml:joinCondition _:c14n75 ;
 	rml:parentTriplesMap <people#People> ;
 	a rml:RefObjectMap .
-<stints/.well-known/genid/markdown/FieldingStints-player> rml:objectMap <stints/.well-known/genid/markdown/FieldingStints-player-objectmap> ;
+_:c14n48 rml:objectMap _:c14n74 ;
 	rml:predicate <ontology#player> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/FieldingStints-putouts-objectmap> rml:datatype xsd:integer ;
+_:c14n10 rml:datatype xsd:integer ;
 	rml:reference "putouts" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/FieldingStints-putouts> rml:objectMap <stints/.well-known/genid/markdown/FieldingStints-putouts-objectmap> ;
+_:c14n21 rml:objectMap _:c14n10 ;
 	rml:predicate <ontology#putouts> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/FieldingStints-subjectmap> rml:class <ontology#Stint> ;
-	rml:template "https://github.com/SemviaIO/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}" ;
+_:c14n28 rml:class <ontology#Stint> ;
+	rml:template "https://pkg.semvia.io/semvia/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}" ;
 	a rml:SubjectMap .
-<stints/.well-known/genid/markdown/FieldingStints-teamseason-objectmap-joincondition> rml:child "teamid" ;
+_:c14n64 rml:child "teamid" ;
 	rml:parent "teamid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/FieldingStints-teamseason-objectmap-joincondition~1> rml:child "yearid" ;
+_:c14n66 rml:child "yearid" ;
 	rml:parent "yearid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/FieldingStints-teamseason-objectmap-joincondition~2> rml:child "lgid" ;
+_:c14n67 rml:child "lgid" ;
 	rml:parent "lgid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/FieldingStints-teamseason-objectmap> rml:joinCondition <stints/.well-known/genid/markdown/FieldingStints-teamseason-objectmap-joincondition> , <stints/.well-known/genid/markdown/FieldingStints-teamseason-objectmap-joincondition~1> , <stints/.well-known/genid/markdown/FieldingStints-teamseason-objectmap-joincondition~2> ;
+_:c14n65 rml:joinCondition _:c14n64 , _:c14n66 , _:c14n67 ;
 	rml:parentTriplesMap <franchises-and-seasons#TeamSeasons> ;
 	a rml:RefObjectMap .
-<stints/.well-known/genid/markdown/FieldingStints-teamseason> rml:objectMap <stints/.well-known/genid/markdown/FieldingStints-teamseason-objectmap> ;
+_:c14n49 rml:objectMap _:c14n65 ;
 	rml:predicate <ontology#teamSeason> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-earnedrunaverage-objectmap> rml:datatype xsd:decimal ;
+_:c14n25 rml:datatype xsd:decimal ;
 	rml:reference "earnedrunaverage" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-earnedrunaverage> rml:objectMap <stints/.well-known/genid/markdown/PitchingStints-earnedrunaverage-objectmap> ;
+_:c14n31 rml:objectMap _:c14n25 ;
 	rml:predicate <ontology#earnedRunAverage> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-logicalsource> rml:iterator "SELECT playerid, yearid, stint, teamid, lgid, CAST(w AS integer) AS wins, CAST(l AS integer) AS losses, CAST(sv AS integer) AS saves, CAST(era AS numeric) AS earnedrunaverage FROM public.pitching" ;
+_:c14n24 rml:iterator "SELECT playerid, yearid, stint, teamid, lgid, CAST(w AS integer) AS wins, CAST(l AS integer) AS losses, CAST(sv AS integer) AS saves, CAST(era AS numeric) AS earnedrunaverage FROM public.pitching" ;
 	rml:referenceFormulation rml:SQL2008Query ;
 	rml:source <connection#semvia-test-data> ;
 	a rml:LogicalSource .
-<stints/.well-known/genid/markdown/PitchingStints-losses-objectmap> rml:datatype xsd:integer ;
+_:c14n11 rml:datatype xsd:integer ;
 	rml:reference "losses" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-losses> rml:objectMap <stints/.well-known/genid/markdown/PitchingStints-losses-objectmap> ;
+_:c14n50 rml:objectMap _:c14n11 ;
 	rml:predicate <ontology#losses> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-player-objectmap-joincondition> rml:child "playerid" ;
+_:c14n73 rml:child "playerid" ;
 	rml:parent "playerid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/PitchingStints-player-objectmap> rml:joinCondition <stints/.well-known/genid/markdown/PitchingStints-player-objectmap-joincondition> ;
+_:c14n72 rml:joinCondition _:c14n73 ;
 	rml:parentTriplesMap <people#People> ;
 	a rml:RefObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-player> rml:objectMap <stints/.well-known/genid/markdown/PitchingStints-player-objectmap> ;
+_:c14n14 rml:objectMap _:c14n72 ;
 	rml:predicate <ontology#player> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-saves-objectmap> rml:datatype xsd:integer ;
+_:c14n15 rml:datatype xsd:integer ;
 	rml:reference "saves" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-saves> rml:objectMap <stints/.well-known/genid/markdown/PitchingStints-saves-objectmap> ;
+_:c14n30 rml:objectMap _:c14n15 ;
 	rml:predicate <ontology#saves> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-subjectmap> rml:class <ontology#Stint> ;
-	rml:template "https://github.com/SemviaIO/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}" ;
+_:c14n22 rml:class <ontology#Stint> ;
+	rml:template "https://pkg.semvia.io/semvia/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}" ;
 	a rml:SubjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-teamseason-objectmap-joincondition> rml:child "teamid" ;
+_:c14n68 rml:child "teamid" ;
 	rml:parent "teamid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/PitchingStints-teamseason-objectmap-joincondition~1> rml:child "yearid" ;
+_:c14n70 rml:child "yearid" ;
 	rml:parent "yearid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/PitchingStints-teamseason-objectmap-joincondition~2> rml:child "lgid" ;
+_:c14n71 rml:child "lgid" ;
 	rml:parent "lgid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/PitchingStints-teamseason-objectmap> rml:joinCondition <stints/.well-known/genid/markdown/PitchingStints-teamseason-objectmap-joincondition> , <stints/.well-known/genid/markdown/PitchingStints-teamseason-objectmap-joincondition~1> , <stints/.well-known/genid/markdown/PitchingStints-teamseason-objectmap-joincondition~2> ;
+_:c14n69 rml:joinCondition _:c14n68 , _:c14n70 , _:c14n71 ;
 	rml:parentTriplesMap <franchises-and-seasons#TeamSeasons> ;
 	a rml:RefObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-teamseason> rml:objectMap <stints/.well-known/genid/markdown/PitchingStints-teamseason-objectmap> ;
+_:c14n51 rml:objectMap _:c14n69 ;
 	rml:predicate <ontology#teamSeason> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-wins-objectmap> rml:datatype xsd:integer ;
+_:c14n52 rml:datatype xsd:integer ;
 	rml:reference "wins" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/PitchingStints-wins> rml:objectMap <stints/.well-known/genid/markdown/PitchingStints-wins-objectmap> ;
+_:c14n5 rml:objectMap _:c14n52 ;
 	rml:predicate <ontology#wins> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/PositionAppearances-gamesatposition-objectmap> rml:datatype xsd:integer ;
+_:c14n33 rml:datatype xsd:integer ;
 	rml:reference "gamesatposition" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/PositionAppearances-gamesatposition> rml:objectMap <stints/.well-known/genid/markdown/PositionAppearances-gamesatposition-objectmap> ;
+_:c14n47 rml:objectMap _:c14n33 ;
 	rml:predicate <ontology#gamesAtPosition> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/PositionAppearances-logicalsource> rml:iterator "SELECT playerid, yearid, stint, teamid, lgid, pos, gamesatposition FROM (SELECT playerid, yearid, '1' AS stint, teamid, lgid, 'P' AS pos, CAST(g_p AS integer) AS gamesatposition FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'C', CAST(g_c AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '1B', CAST(g_1b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '2B', CAST(g_2b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '3B', CAST(g_3b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'SS', CAST(g_ss AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'LF', CAST(g_lf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'CF', CAST(g_cf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'RF', CAST(g_rf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'OF', CAST(g_of AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'DH', CAST(g_dh AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'PH', CAST(g_ph AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'PR', CAST(g_pr AS integer) FROM public.appearances) pivot WHERE gamesatposition > 0" ;
+_:c14n32 rml:iterator "SELECT playerid, yearid, stint, teamid, lgid, pos, gamesatposition FROM (SELECT playerid, yearid, '1' AS stint, teamid, lgid, 'P' AS pos, CAST(g_p AS integer) AS gamesatposition FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'C', CAST(g_c AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '1B', CAST(g_1b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '2B', CAST(g_2b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, '3B', CAST(g_3b AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'SS', CAST(g_ss AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'LF', CAST(g_lf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'CF', CAST(g_cf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'RF', CAST(g_rf AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'OF', CAST(g_of AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'DH', CAST(g_dh AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'PH', CAST(g_ph AS integer) FROM public.appearances UNION ALL SELECT playerid, yearid, '1', teamid, lgid, 'PR', CAST(g_pr AS integer) FROM public.appearances) pivot WHERE gamesatposition > 0" ;
 	rml:referenceFormulation rml:SQL2008Query ;
 	rml:source <connection#semvia-test-data> ;
 	a rml:LogicalSource .
-<stints/.well-known/genid/markdown/PositionAppearances-player-objectmap-joincondition> rml:child "playerid" ;
+_:c14n77 rml:child "playerid" ;
 	rml:parent "playerid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/PositionAppearances-player-objectmap> rml:joinCondition <stints/.well-known/genid/markdown/PositionAppearances-player-objectmap-joincondition> ;
+_:c14n76 rml:joinCondition _:c14n77 ;
 	rml:parentTriplesMap <people#People> ;
 	a rml:RefObjectMap .
-<stints/.well-known/genid/markdown/PositionAppearances-player> rml:objectMap <stints/.well-known/genid/markdown/PositionAppearances-player-objectmap> ;
+_:c14n16 rml:objectMap _:c14n76 ;
 	rml:predicate <ontology#player> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/PositionAppearances-position-objectmap> rml:reference "pos" ;
+_:c14n4 rml:reference "pos" ;
 	a rml:ObjectMap .
-<stints/.well-known/genid/markdown/PositionAppearances-position> rml:objectMap <stints/.well-known/genid/markdown/PositionAppearances-position-objectmap> ;
+_:c14n13 rml:objectMap _:c14n4 ;
 	rml:predicate <ontology#position> ;
 	a rml:PredicateObjectMap .
-<stints/.well-known/genid/markdown/PositionAppearances-subjectmap> rml:class <ontology#Stint> ;
-	rml:template "https://github.com/SemviaIO/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}" ;
+_:c14n46 rml:class <ontology#Stint> ;
+	rml:template "https://pkg.semvia.io/semvia/lahman-baseball/stint/{playerid}-{yearid}-{stint}-{teamid}" ;
 	a rml:SubjectMap .
-<stints/.well-known/genid/markdown/PositionAppearances-teamseason-objectmap-joincondition> rml:child "teamid" ;
+_:c14n60 rml:child "teamid" ;
 	rml:parent "teamid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/PositionAppearances-teamseason-objectmap-joincondition~1> rml:child "yearid" ;
+_:c14n62 rml:child "yearid" ;
 	rml:parent "yearid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/PositionAppearances-teamseason-objectmap-joincondition~2> rml:child "lgid" ;
+_:c14n63 rml:child "lgid" ;
 	rml:parent "lgid" ;
 	a rml:Join .
-<stints/.well-known/genid/markdown/PositionAppearances-teamseason-objectmap> rml:joinCondition <stints/.well-known/genid/markdown/PositionAppearances-teamseason-objectmap-joincondition> , <stints/.well-known/genid/markdown/PositionAppearances-teamseason-objectmap-joincondition~1> , <stints/.well-known/genid/markdown/PositionAppearances-teamseason-objectmap-joincondition~2> ;
+_:c14n61 rml:joinCondition _:c14n60 , _:c14n62 , _:c14n63 ;
 	rml:parentTriplesMap <franchises-and-seasons#TeamSeasons> ;
 	a rml:RefObjectMap .
-<stints/.well-known/genid/markdown/PositionAppearances-teamseason> rml:objectMap <stints/.well-known/genid/markdown/PositionAppearances-teamseason-objectmap> ;
+_:c14n34 rml:objectMap _:c14n61 ;
 	rml:predicate <ontology#teamSeason> ;
 	a rml:PredicateObjectMap .
-<> dct:title "Stints"@en ;
+<> dct:conformsTo <https://pkg.semvia.io/semvia/rml/profiles/rml-mapping> ;
+	dct:title "Stints"@en ;
 	a <https://pkg.semvia.io/semvia/core/document#Document> , folio:rml-mapping-schema\#RmlMapping ;
 	folio:mapping\#mappedBy folio:rml-mapping-map\#RmlMappingMap .
